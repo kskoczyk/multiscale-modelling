@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Convert;
 
 namespace Multiscale_Modelling
 {
@@ -17,6 +18,13 @@ namespace Multiscale_Modelling
             InitializeComponent();
 
             boardControl1.Log = AddLog;
+            Logs.SetLogRichTextBox(this.richTextBoxLog);
+
+            // initialize first board (1x1)
+            numericUpDownX_Leave(null, null);
+            numericUpDownY_Leave(null, null);
+
+            Logs.Log("Program start", Logs.LogLevel.Other);
         }
         public static IEnumerable<T> GetForms<T>() where T : Form // gimmick - for getting Form1 instance from other classes
         {
@@ -34,7 +42,6 @@ namespace Multiscale_Modelling
         private void buttonRun_Click(object sender, EventArgs e)
         {
             AddLog("Run clicked", Logs.LogLevel.Info);
-            //Board.DrawBoard(pictureBoxBoard);
         }
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
@@ -66,7 +73,47 @@ namespace Multiscale_Modelling
 
         private void numericUpDownX_Leave(object sender, EventArgs e)
         {
-            //boardControl1.
+            boardControl1.CellNumberWidth = ToInt32(numericUpDownX.Value);
+        }
+
+        private void numericUpDownY_Leave(object sender, EventArgs e)
+        {
+            boardControl1.CellNumberHeight = ToInt32(numericUpDownY.Value);
+        }
+
+        private void buttonRandom_Click(object sender, EventArgs e)
+        {
+            buttonRandom.Enabled = false;
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    boardControl1.Board.RollRandomCells(ToInt32(numericUpDownNucleiNumber.Value));
+                    boardControl1.Draw();
+                }
+                catch (Exception ex)
+                {
+                    Logs.Log("RANDOM: An error has ocurred while trying to set random cells. Exception message: " + ex.Message, Logs.LogLevel.Error);
+                }
+                finally
+                {
+                    buttonRandom.Invoke(new Action(() =>
+                    {
+                        buttonRandom.Enabled = true;
+                    }));
+                }
+            });
+
+        }
+
+        private void richTextBoxLog_TextChanged(object sender, EventArgs e)
+        {
+            // automatically scroll to bottom when new log appears
+            richTextBoxLog.SelectionStart = richTextBoxLog.Text.Length;
+            richTextBoxLog.ScrollToCaret();
+
+            // TODO: save logs to a file
         }
     }
 }

@@ -20,4 +20,35 @@ namespace Multiscale_Modelling
             box.SelectionColor = box.ForeColor;
         }
     }
+
+    public static class RandomDevice
+    {
+        private static readonly object randomLock = new object(); // provide multithread safety
+        private readonly static Random Random = new Random();
+
+        public static int Next()
+        {
+            lock (randomLock)
+            {
+                return Random.Next();
+            }
+        }
+
+        public static int Next(int maxValue)
+        {
+            lock (randomLock)
+            {
+                return Random.Next(maxValue);
+            }
+        }
+
+        public static int Next(int minValue, int maxValue)
+        {
+            lock (randomLock)
+            {
+                return Random.Next(minValue, maxValue);
+            }
+        }
+    }
+
 }

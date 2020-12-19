@@ -34,7 +34,7 @@
             // 
             // pictureBoxBoard
             // 
-            this.pictureBoxBoard.BackColor = System.Drawing.Color.LightGray;
+            this.pictureBoxBoard.BackColor = System.Drawing.SystemColors.Control;
             this.pictureBoxBoard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxBoard.Location = new System.Drawing.Point(0, 0);
             this.pictureBoxBoard.Name = "pictureBoxBoard";

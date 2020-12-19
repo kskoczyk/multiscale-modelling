@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using System.Threading.Tasks;
 
 namespace Multiscale_Modelling
 {
     public static class Logs
     {
+        private static RichTextBox _rtb;
+
+        public static void SetLogRichTextBox(RichTextBox rtb)
+        {
+            _rtb = rtb;
+        }
+
         public enum LogLevel
         {
             Error = 0,
@@ -17,7 +25,21 @@ namespace Multiscale_Modelling
             Other = 3
         }
 
-        public static (string, Color) getPrefix(LogLevel logLevel)
+        public static void Log(string message, Logs.LogLevel logLevel)
+        {
+            Action writeLog = new Action(() =>
+            {
+                _rtb.AppendText(Logs.getPrefix(logLevel));
+                _rtb.AppendText(message + "\n");
+            });
+
+            if (_rtb.InvokeRequired) // provide thread safety
+                _rtb.Invoke(writeLog);
+            else
+                writeLog.Invoke();
+        }
+
+        public static (string prefix, Color color) getPrefix(LogLevel logLevel)
         {
             string prefix = "";
             Color color = new Color();

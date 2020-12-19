@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
+using static System.Convert;
 
 namespace Multiscale_Modelling
 {
@@ -15,8 +11,12 @@ namespace Multiscale_Modelling
     {
         private Bitmap bitmap;
         private Graphics graphics;
+        private float cellSize;
+        private int bitmapSize;
+        private Pen gridPen = new Pen(Color.Black);
+
         public Board Board = new Board();
-		public Action<string, Logs.LogLevel> Log { get; set; } // TODO: use static instead
+		public Action<string, Logs.LogLevel> Log { get; set; } // TESTING TODO: use static instead
 		//public Func<int, sbyte, string> MyProperty { get; set; } // same as Action, but has return type
 		public BoardControl()
         {
@@ -48,7 +48,7 @@ namespace Multiscale_Modelling
 
 
         private int _cellNumberWidth;
-        public int GridCellWidth
+        public int CellNumberWidth
         {
             get => _cellNumberWidth;
             set
@@ -56,14 +56,14 @@ namespace Multiscale_Modelling
                 if (_cellNumberWidth != value)
                 {
                     _cellNumberWidth = value;
-                    //Matrix.Rearange(_gridCellWidth, _gridCellHeight);
+                    Board.Resize(CellNumberWidth, CellNumberHeight);
                     Draw();
                 }
             }
         }
 
         private int _cellNumberHeight;
-        public int GridCellHeight
+        public int CellNumberHeight
         {
             get => _cellNumberHeight;
             set
@@ -71,7 +71,7 @@ namespace Multiscale_Modelling
                 if (_cellNumberHeight != value)
                 {
                     _cellNumberHeight = value;
-                    //Matrix.Rearange(_gridCellWidth, _gridCellHeight);
+                    Board.Resize(CellNumberWidth, CellNumberHeight);
                     Draw();
                 }
             }
@@ -88,13 +88,20 @@ namespace Multiscale_Modelling
             }
         }
 
-        public void ResizeBitmap()
+        private void ResizeBitmap() // TODO: adapt to rectangular boards instead of keeping a square
         {
-            int bitmapSize = pictureBoxBoard.Width < pictureBoxBoard.Height ? pictureBoxBoard.Width : pictureBoxBoard.Height;
+            bitmapSize = pictureBoxBoard.Width < pictureBoxBoard.Height ? pictureBoxBoard.Width : pictureBoxBoard.Height;
             bitmap = new Bitmap(bitmapSize, bitmapSize);
             pictureBoxBoard.Image?.Dispose();
             pictureBoxBoard.Image = bitmap;
             graphics = Graphics.FromImage(bitmap);
+        }
+
+        private void CalculateCellSize()
+        {
+            float cellWidth = 1.0f * bitmapSize / CellNumberWidth;
+            float cellHeight = 1.0f * bitmapSize / CellNumberHeight;
+            cellSize = cellWidth < cellHeight ? cellWidth : cellHeight;
         }
 
         public void Draw(IEnumerable<Cell> cellsToDraw = null)
@@ -102,33 +109,64 @@ namespace Multiscale_Modelling
             if (!IsHandleCreated)
                 return;
 
-            //CalculateCellSize();
+            CalculateCellSize();
+
             if (pictureBoxBoard.Image == null)
-            {
-                //pictureBoxBoard.Image?.Dispose();
-                //pictureBoxBoard.Image = new Bitmap(pictureBoxBoard.Width, pictureBoxBoard.Height);
-                //bitmap = new Bitmap(pictureBoxBoard.Width, pictureBoxBoard.Height);
-            }
+                ResizeBitmap();
 
             if (cellsToDraw?.Count() > 0)
             {
-                //PrintCells(cellsToDraw);
+                // print selected
+                DrawCells(cellsToDraw);
             }
             else
             {
+                // print all
                 graphics.Clear(Color.White);
-                //PrintCells();
+                DrawCells();
             }
 
-            //if (IsGridEnabled)
-            //PrintGrid();
+            if (IsGridEnabled)
+                DrawGrid();
 
             pictureBoxBoard.Invoke(new Action(() => pictureBoxBoard.Image = bitmap)); // invoke - draw pictureBox in the main thread
         }
 
         public void DrawGrid()
         {
+            // vertical lines
+            graphics.DrawLine(gridPen, 0, 0, 0, ToSingle(CellNumberHeight * cellSize));
+            for (int i = 0; i <= CellNumberWidth; i++)
+                graphics.DrawLine(gridPen, ToSingle(i * cellSize) - 1, 0, ToSingle(i * cellSize) - 1, ToSingle(CellNumberHeight * cellSize));
 
+            // horizontal lines
+            graphics.DrawLine(gridPen, 0, 0, ToSingle(CellNumberWidth * cellSize), 0);
+            for (int i = 0; i <= CellNumberHeight; i++)
+                graphics.DrawLine(gridPen, 0, ToSingle(i * cellSize) - 1, ToSingle(CellNumberWidth * cellSize), ToSingle(i * cellSize) - 1);
+        }
+
+        public void DrawCells(IEnumerable<Cell> cellsToDraw = null)
+        {
+            if (cellsToDraw == null)
+            {
+                for (int i = 0; i < Board.RowCount; i++)
+                {
+                    for (int j = 0; j < Board.ColumnCount; j++)
+                    {
+                        Cell cell = Board.GetCell(row: i, column: j);
+                        SolidBrush brush = Cell.UniqueColors[cell.Color.ToArgb()];
+                        graphics.FillRectangle(brush, cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
+                    }
+                }
+            }
+            else
+            {
+                foreach (Cell cell in cellsToDraw)
+                {
+                    SolidBrush brush = Cell.UniqueColors[cell.Color.ToArgb()];
+                    graphics.FillRectangle(brush, cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
+                }
+            }
         }
     }
 }

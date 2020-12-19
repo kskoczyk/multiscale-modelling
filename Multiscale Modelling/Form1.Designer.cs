@@ -44,13 +44,14 @@
             this.groupBoxBoard = new System.Windows.Forms.GroupBox();
             this.buttonSetBoard = new System.Windows.Forms.Button();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
+            this.buttonRandom = new System.Windows.Forms.Button();
             this.labelNuclei = new System.Windows.Forms.Label();
             this.numericUpDownNucleiNumber = new System.Windows.Forms.NumericUpDown();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.labelLog = new System.Windows.Forms.Label();
-            this.boardControl1 = new Multiscale_Modelling.BoardControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.boardControl1 = new Multiscale_Modelling.BoardControl();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
@@ -63,7 +64,7 @@
             // 
             // buttonRun
             // 
-            this.buttonRun.Location = new System.Drawing.Point(272, 226);
+            this.buttonRun.Location = new System.Drawing.Point(271, 272);
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(100, 50);
             this.buttonRun.TabIndex = 0;
@@ -127,9 +128,19 @@
             0,
             0,
             0});
+            this.numericUpDownX.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numericUpDownX.Name = "numericUpDownX";
             this.numericUpDownX.Size = new System.Drawing.Size(120, 22);
             this.numericUpDownX.TabIndex = 4;
+            this.numericUpDownX.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numericUpDownX.Leave += new System.EventHandler(this.numericUpDownX_Leave);
             // 
             // numericUpDownY
@@ -140,9 +151,20 @@
             0,
             0,
             0});
+            this.numericUpDownY.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numericUpDownY.Name = "numericUpDownY";
             this.numericUpDownY.Size = new System.Drawing.Size(120, 22);
             this.numericUpDownY.TabIndex = 5;
+            this.numericUpDownY.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownY.Leave += new System.EventHandler(this.numericUpDownY_Leave);
             // 
             // labelXSize
             // 
@@ -200,6 +222,7 @@
             // 
             // groupBoxSettings
             // 
+            this.groupBoxSettings.Controls.Add(this.buttonRandom);
             this.groupBoxSettings.Controls.Add(this.labelNuclei);
             this.groupBoxSettings.Controls.Add(this.numericUpDownNucleiNumber);
             this.groupBoxSettings.Location = new System.Drawing.Point(18, 117);
@@ -208,6 +231,16 @@
             this.groupBoxSettings.TabIndex = 10;
             this.groupBoxSettings.TabStop = false;
             this.groupBoxSettings.Text = "Settings";
+            // 
+            // buttonRandom
+            // 
+            this.buttonRandom.Location = new System.Drawing.Point(132, 40);
+            this.buttonRandom.Name = "buttonRandom";
+            this.buttonRandom.Size = new System.Drawing.Size(85, 23);
+            this.buttonRandom.TabIndex = 10;
+            this.buttonRandom.Text = "Random";
+            this.buttonRandom.UseVisualStyleBackColor = true;
+            this.buttonRandom.Click += new System.EventHandler(this.buttonRandom_Click);
             // 
             // labelNuclei
             // 
@@ -232,33 +265,22 @@
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(18, 226);
+            this.richTextBoxLog.Location = new System.Drawing.Point(18, 272);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(236, 50);
             this.richTextBoxLog.TabIndex = 11;
             this.richTextBoxLog.Text = "";
+            this.richTextBoxLog.TextChanged += new System.EventHandler(this.richTextBoxLog_TextChanged);
             // 
             // labelLog
             // 
             this.labelLog.AutoSize = true;
-            this.labelLog.Location = new System.Drawing.Point(18, 203);
+            this.labelLog.Location = new System.Drawing.Point(15, 252);
             this.labelLog.Name = "labelLog";
             this.labelLog.Size = new System.Drawing.Size(32, 17);
             this.labelLog.TabIndex = 12;
             this.labelLog.Text = "Log";
-            // 
-            // boardControl1
-            // 
-            this.boardControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.boardControl1.GridCellHeight = 0;
-            this.boardControl1.GridCellWidth = 0;
-            this.boardControl1.IsGridEnabled = false;
-            this.boardControl1.Location = new System.Drawing.Point(3, 3);
-            this.boardControl1.Log = null;
-            this.boardControl1.Name = "boardControl1";
-            this.boardControl1.Size = new System.Drawing.Size(337, 325);
-            this.boardControl1.TabIndex = 13;
             // 
             // tableLayoutPanel1
             // 
@@ -286,6 +308,18 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(383, 325);
             this.panel1.TabIndex = 14;
+            // 
+            // boardControl1
+            // 
+            this.boardControl1.CellNumberHeight = 0;
+            this.boardControl1.CellNumberWidth = 0;
+            this.boardControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.boardControl1.IsGridEnabled = false;
+            this.boardControl1.Location = new System.Drawing.Point(3, 3);
+            this.boardControl1.Log = null;
+            this.boardControl1.Name = "boardControl1";
+            this.boardControl1.Size = new System.Drawing.Size(337, 325);
+            this.boardControl1.TabIndex = 13;
             // 
             // Form1
             // 
@@ -339,6 +373,7 @@
 		private BoardControl boardControl1;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Panel panel1;
-	}
+        private System.Windows.Forms.Button buttonRandom;
+    }
 }
 
