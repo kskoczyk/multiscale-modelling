@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +18,7 @@ namespace Multiscale_Modelling
         // TODO:
         // Handle set button in another thread (creation of large boards)
         // Handle resize when drawing
+        private const int CELL_BITMAP_SIZE = 1;
         public Form1()
         {
             InitializeComponent();
@@ -208,6 +211,108 @@ namespace Multiscale_Modelling
             else
             {
                 Logs.Log("INCLUSION: Cannot add inclusions. The board is only partially filled.", Logs.LogLevel.Error);
+            }
+
+        }
+
+        private void toBitmapbmpToolStripMenuItemExportBmp_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "BMP files (*.bmp)|*.bmp|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                boardControl1.Board.ToBitmap(CELL_BITMAP_SIZE).Save(saveFileDialog.FileName, ImageFormat.Bmp);
+            else
+                Logs.Log("EXPORT: Unable to show export dialog", Logs.LogLevel.Error);
+        }
+
+        private void toTextFiletxtToolStripMenuItemExportTxt_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Filter = "TXT files (*.txt)|*.txt|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                using (StreamWriter sw = new StreamWriter(saveFileDialog.FileName))
+                    sw.Write(boardControl1.Board.ToString());
+            else
+                Logs.Log("EXPORT: Unable to show export dialog", Logs.LogLevel.Error);
+        }
+
+        private void toolStripMenuItemImportBmp_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "BMP files|*.bmp"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    Bitmap bitmap = new Bitmap(openFileDialog.FileName);
+                    boardControl1.LoadBoard(bitmap, CELL_BITMAP_SIZE);
+                    numericUpDownY.Value = boardControl1.Board.RowCount;
+                    numericUpDownX.Value = boardControl1.Board.ColumnCount;
+                    boardControl1.Draw();
+                }
+                catch (Exception ex)
+                {
+                    Logs.Log("IMPORT: Unable to show import dialog. Exception message: " + ex.Message, Logs.LogLevel.Error);
+                }
+            }
+
+        }
+
+        private void fromTextFiletxtToolStripMenuItemImportTxt_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "TXT files|*.txt"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                List<(int Id, int Phase, int IndexX, int IndexY)> cells = new List<(int Id, int Phase, int IndexX, int IndexY)>();
+                try
+                {
+                    StreamReader sr = new StreamReader(openFileDialog.FileName);
+                    string line;
+
+                    sr.ReadLine(); // skip first txt line // TODO: use it to allocate resources beforehand
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        string[] data = line.Split(' ');
+                        if (data.Length != 4)
+                            continue;
+
+                        if (!int.TryParse(data[0], out int indexX))
+                            continue;
+                        if (!int.TryParse(data[1], out int indexY))
+                            continue;
+                        if (!int.TryParse(data[2], out int phase))
+                            continue;
+                        if (!int.TryParse(data[3], out int id))
+                            continue;
+
+                        cells.Add((Id: id, Phase: phase, IndexX: indexX, IndexY: indexY));
+                    }
+                    boardControl1.LoadBoard(cells);
+                    numericUpDownY.Value = boardControl1.Board.RowCount;
+                    numericUpDownX.Value = boardControl1.Board.ColumnCount;
+                    boardControl1.Draw();
+                }
+                catch (Exception ex)
+                {
+                    Logs.Log("IMPORT: Unable to show import dialog. Exception message: " + ex.Message, Logs.LogLevel.Error);
+                }
             }
 
         }

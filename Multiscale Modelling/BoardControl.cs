@@ -168,5 +168,65 @@ namespace Multiscale_Modelling
                 }
             }
         }
+
+        public void LoadBoard(Bitmap bitmap, int cellBmpSize)
+        {
+            Board.Clear();
+            int rowsCount = bitmap.Height / cellBmpSize;
+            int columnsCount = bitmap.Width / cellBmpSize;
+
+            CellNumberHeight = rowsCount;
+            CellNumberWidth = columnsCount;
+
+            HashSet<int> colors = new HashSet<int>()
+            {
+                Color.Black.ToArgb(),
+                Color.White.ToArgb()
+            };
+
+            for (int i = 0; i < rowsCount; i++)
+            {
+                for (int j = 0; j < columnsCount; j++)
+                {
+                    Color color = bitmap.GetPixel(j * cellBmpSize, i * cellBmpSize);
+                    int colorArgb = color.ToArgb();
+                    colors.Add(colorArgb);
+
+                    var list = colors.ToList();
+
+                    var id = list.IndexOf(list.Find(x => x == colorArgb)) - 1;
+                    Board.GetCell(i, j).SetId(id);
+                    Board.GetCell(i, j).SetColor(color);
+                }
+            }
+        }
+
+        public void LoadBoard(List<(int Id, int Phase, int IndexX, int IndexY)> cellsToLoad)
+        {
+            int maxIndexX = cellsToLoad.Select(c => c.IndexX).Max();
+            int maxIndexY = cellsToLoad.Select(c => c.IndexY).Max();
+
+            CellNumberHeight = maxIndexY + 1;
+            CellNumberWidth = maxIndexX + 1;
+
+            HashSet<int> colors = new HashSet<int>()
+            {
+                Color.Black.ToArgb(),
+                Color.White.ToArgb()
+            };
+
+            int coloredCells = cellsToLoad.Select(c => c.Id).Where(id => id > 0).Distinct().Count();
+            while (colors.Count < coloredCells + 2)
+                colors.Add(Color.FromArgb(RandomDevice.Next(255), RandomDevice.Next(255), RandomDevice.Next(255)).ToArgb()); // TODO: colors will vary between consequent imports
+
+            foreach ((int Id, int Phase, int IndexX, int IndexY) in cellsToLoad)
+            {
+                // TODO: cell c = get()...
+                Board.GetCell(IndexY, IndexX).SetId(Id);
+                Board.GetCell(IndexY, IndexX).Phase = Phase;
+                Board.GetCell(IndexY, IndexX).SetColor(Color.FromArgb(colors.ToList().ElementAt(Id + 1)));
+            }
+        }
+
     }
 }

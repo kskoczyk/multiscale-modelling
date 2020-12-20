@@ -116,7 +116,7 @@
             this.toolStripSeparator1,
             this.exportToolStripMenuItem});
             this.microstructureToolStripMenuItem.Name = "microstructureToolStripMenuItem";
-            this.microstructureToolStripMenuItem.Size = new System.Drawing.Size(179, 26);
+            this.microstructureToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.microstructureToolStripMenuItem.Text = "Microstructure";
             // 
             // importToolStripMenuItem
@@ -125,7 +125,7 @@
             this.toolStripMenuItemImportBmp,
             this.fromTextFiletxtToolStripMenuItemImportTxt});
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.importToolStripMenuItem.Text = "Import";
             // 
             // toolStripMenuItemImportBmp
@@ -133,17 +133,19 @@
             this.toolStripMenuItemImportBmp.Name = "toolStripMenuItemImportBmp";
             this.toolStripMenuItemImportBmp.Size = new System.Drawing.Size(218, 26);
             this.toolStripMenuItemImportBmp.Text = "From bitmap (.bmp)";
+            this.toolStripMenuItemImportBmp.Click += new System.EventHandler(this.toolStripMenuItemImportBmp_Click);
             // 
             // fromTextFiletxtToolStripMenuItemImportTxt
             // 
             this.fromTextFiletxtToolStripMenuItemImportTxt.Name = "fromTextFiletxtToolStripMenuItemImportTxt";
             this.fromTextFiletxtToolStripMenuItemImportTxt.Size = new System.Drawing.Size(218, 26);
             this.fromTextFiletxtToolStripMenuItemImportTxt.Text = "From text file (.txt)";
+            this.fromTextFiletxtToolStripMenuItemImportTxt.Click += new System.EventHandler(this.fromTextFiletxtToolStripMenuItemImportTxt_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(126, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
             // 
             // exportToolStripMenuItem
             // 
@@ -151,20 +153,22 @@
             this.toBitmapbmpToolStripMenuItemExportBmp,
             this.toTextFiletxtToolStripMenuItemExportTxt});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // toBitmapbmpToolStripMenuItemExportBmp
             // 
             this.toBitmapbmpToolStripMenuItemExportBmp.Name = "toBitmapbmpToolStripMenuItemExportBmp";
-            this.toBitmapbmpToolStripMenuItemExportBmp.Size = new System.Drawing.Size(200, 26);
+            this.toBitmapbmpToolStripMenuItemExportBmp.Size = new System.Drawing.Size(216, 26);
             this.toBitmapbmpToolStripMenuItemExportBmp.Text = "To bitmap (.bmp)";
+            this.toBitmapbmpToolStripMenuItemExportBmp.Click += new System.EventHandler(this.toBitmapbmpToolStripMenuItemExportBmp_Click);
             // 
             // toTextFiletxtToolStripMenuItemExportTxt
             // 
             this.toTextFiletxtToolStripMenuItemExportTxt.Name = "toTextFiletxtToolStripMenuItemExportTxt";
-            this.toTextFiletxtToolStripMenuItemExportTxt.Size = new System.Drawing.Size(200, 26);
+            this.toTextFiletxtToolStripMenuItemExportTxt.Size = new System.Drawing.Size(216, 26);
             this.toTextFiletxtToolStripMenuItemExportTxt.Text = "To text file (.txt)";
+            this.toTextFiletxtToolStripMenuItemExportTxt.Click += new System.EventHandler(this.toTextFiletxtToolStripMenuItemExportTxt_Click);
             // 
             // contextMenuStrip1
             // 

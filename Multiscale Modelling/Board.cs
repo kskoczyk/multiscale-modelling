@@ -39,6 +39,16 @@ namespace Multiscale_Modelling
             cellList = new List<List<Cell>>();
             NeighborRule = new MooreNeighborhood();
         }
+        public override string ToString() // used for exporting to a .txt file
+        {
+            int uniquePhases = cellList.SelectMany(x => x).Select(x => x.Phase).Distinct().Count();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append($"{ColumnCount} {RowCount} {uniquePhases}\n");
+            foreach (List<Cell> row in cellList)
+                foreach (Cell cell in row)
+                    stringBuilder.Append($"{cell.Position.X} {cell.Position.Y} {cell.Phase} {cell.Id}\n");
+            return stringBuilder.ToString();
+        }
 
         public Cell GetCell(int row, int column)
         {
@@ -535,6 +545,17 @@ namespace Multiscale_Modelling
             else
                 throw new Exception();
         }
+        public Bitmap ToBitmap(int cellBmpSize)
+        {
+            Bitmap bitmap = new Bitmap(ColumnCount * cellBmpSize, RowCount * cellBmpSize);
+            Graphics graphics = Graphics.FromImage(bitmap);
 
+            for (int i = 0; i < cellList.Count; i++)
+                for (int j = 0; j < cellList[i].Count; j++)
+                    graphics.FillRectangle(new SolidBrush(cellList[i][j].Color), j * cellBmpSize, i * cellBmpSize, cellBmpSize, cellBmpSize);
+
+            // TODO: add metadata
+            return bitmap;
+        }
     }
 }
