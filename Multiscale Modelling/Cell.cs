@@ -34,7 +34,7 @@ namespace Multiscale_Modelling
             Color = Color.White;
         }
 
-        public int Id { get; private set; }
+        public int Id { get; private set; } // type
         public int NewId { get; set; }
         public Color Color { get; private set; }
         public Color NewColor { get; set; }

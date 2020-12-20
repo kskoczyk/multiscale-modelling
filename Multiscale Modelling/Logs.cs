@@ -29,7 +29,8 @@ namespace Multiscale_Modelling
         {
             Action writeLog = new Action(() =>
             {
-                _rtb.AppendText(Logs.getPrefix(logLevel));
+                getPrefix(logLevel, out string prefix, out Color color);
+                _rtb.AppendText((prefix, color));
                 _rtb.AppendText(message + "\n");
             });
 
@@ -39,10 +40,10 @@ namespace Multiscale_Modelling
                 writeLog.Invoke();
         }
 
-        public static (string prefix, Color color) getPrefix(LogLevel logLevel)
+        public static void getPrefix(LogLevel logLevel, out string prefix, out Color color)
         {
-            string prefix = "";
-            Color color = new Color();
+            prefix = string.Empty;
+            color = new Color();
 
             switch (logLevel)
             {
@@ -72,7 +73,7 @@ namespace Multiscale_Modelling
                     }
             }
 
-            return (prefix, color);
+            return;
         }
     }
 }

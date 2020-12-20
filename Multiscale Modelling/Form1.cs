@@ -13,48 +13,90 @@ namespace Multiscale_Modelling
 {
     public partial class Form1 : Form
     {
+        // TODO:
+        // Handle set button in another thread (creation of large boards)
+        // Handle resize when drawing
         public Form1()
         {
             InitializeComponent();
 
-            boardControl1.Log = AddLog;
             Logs.SetLogRichTextBox(this.richTextBoxLog);
 
             // initialize first board (1x1)
             numericUpDownX_Leave(null, null);
             numericUpDownY_Leave(null, null);
 
+            /*
+            Array a = Enum.GetValues(typeof(abc));
+            IEnumerable<object> b = a.OfType<object>();
+            IEnumerable<string> c = b.Select(x => x.ToString());
+             */
+            comboBoxBoundaryCondition.Items.AddRange(EnumToString.BoundaryCondition.Values.ToArray());
+            comboBoxBoundaryCondition.SelectedItem = EnumToString.BoundaryCondition[Bc.Absorbing];
+
             Logs.Log("Program start", Logs.LogLevel.Other);
         }
-        public static IEnumerable<T> GetForms<T>() where T : Form // gimmick - for getting Form1 instance from other classes
+        public static IEnumerable<T> GetForms<T>() where T : Form // TESTING gimmick - for getting Form1 instance from other classes
         {
             foreach (Form form in Application.OpenForms)
                 if (form.GetType() == typeof(T))
                     yield return (T)form;
         }
 
-        public void AddLog(string message, Logs.LogLevel logLevel)
+        private void ToggleSimulationControls(bool toggle)
         {
-            richTextBoxLog.AppendText(Logs.getPrefix(logLevel));
-            richTextBoxLog.AppendText(message + "\n");
+            buttonRun.Enabled = toggle;
+            buttonClear.Enabled = toggle;
+            buttonRandom.Enabled = toggle;
+            buttonClear.Enabled = toggle;
+            checkBoxDisplayGrid.Enabled = toggle; // TODO: pause when checked mid-animation or handle change mid-animation
+            numericUpDownX.Enabled = toggle;
+            numericUpDownY.Enabled = toggle;
         }
 
         private void buttonRun_Click(object sender, EventArgs e)
         {
-            AddLog("Run clicked", Logs.LogLevel.Info);
+            ToggleSimulationControls(false);
+
+            Task.Run(() =>
+            {
+                Logs.Log("Run task started", Logs.LogLevel.Info);
+                try
+                {
+                    bool isAnimated = checkBoxAnimate.Checked;
+                    if (boardControl1.Board.GetAllCells().Where(c => c.Id != 0 && c.Id != -1).FirstOrDefault() is Cell) // get only mutable cells
+                    {
+                        boardControl1.Board.InitializeCalculations();
+                        while (boardControl1.Board.GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is Cell)
+                        {
+                            LinkedList<Cell> cellsToDraw = boardControl1.Board.CalculateNextGeneration();
+                            if (checkBoxAnimate.Checked && checkBoxAnimate.Checked == isAnimated)
+                            {
+                                boardControl1.Draw(cellsToDraw);
+                            }
+                            else if (checkBoxAnimate.Checked) // check whether board should be animated continously
+                            {
+                                boardControl1.Draw();
+                                isAnimated = checkBoxAnimate.Checked;
+                            }
+                            else
+                                isAnimated = checkBoxAnimate.Checked;
+                        }
+                        boardControl1.Draw();
+                    }
+                }
+                finally
+                {
+                    buttonRun.Invoke(new Action(() =>
+                    {
+                        ToggleSimulationControls(true);
+                    }));
+                    Logs.Log("Finished calculations", Logs.LogLevel.Info);
+                }
+            });
         }
 
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // TODO: import
-        }
-
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // TODO: export
-        }
-
-        private void checkBoxDisplayGrid_CheckedChanged(object sender, EventArgs e)
+    private void checkBoxDisplayGrid_CheckedChanged(object sender, EventArgs e)
         {
             boardControl1.IsGridEnabled = checkBoxDisplayGrid.Checked;
 
@@ -62,13 +104,9 @@ namespace Multiscale_Modelling
 
         private void buttonSetBoard_Click(object sender, EventArgs e)
         {
-            int xSize = (int)numericUpDownX.Value;
-            int ySize = (int)numericUpDownY.Value;
-            AddLog("Setting the board to X: " + xSize.ToString() + ", Y: " + ySize.ToString(), Logs.LogLevel.Info);
-
-            //clear
-            //add cells
-            //draw grid
+            numericUpDownX_Leave(null, null);
+            numericUpDownY_Leave(null, null);
+            // TODO: handle mousewheel and cursor leaving the control so this button can become redundant
         }
 
         private void numericUpDownX_Leave(object sender, EventArgs e)
@@ -83,7 +121,7 @@ namespace Multiscale_Modelling
 
         private void buttonRandom_Click(object sender, EventArgs e)
         {
-            buttonRandom.Enabled = false;
+            ToggleSimulationControls(false);
 
             Task.Run(() =>
             {
@@ -100,7 +138,7 @@ namespace Multiscale_Modelling
                 {
                     buttonRandom.Invoke(new Action(() =>
                     {
-                        buttonRandom.Enabled = true;
+                        ToggleSimulationControls(true);
                     }));
                 }
             });
@@ -113,7 +151,43 @@ namespace Multiscale_Modelling
             richTextBoxLog.SelectionStart = richTextBoxLog.Text.Length;
             richTextBoxLog.ScrollToCaret();
 
-            // TODO: save logs to a file
+            try
+            {
+                richTextBoxLog.SaveFile("./log.rtf", RichTextBoxStreamType.RichText);
+            }
+            catch (Exception ex)
+            {
+                Logs.Log("LOGFILE: Could not create a log file. Exception message: " + ex.Message, Logs.LogLevel.Error);
+            }
+        }
+
+        private void buttonClear_Click(object sender, EventArgs e)
+        {
+            ToggleSimulationControls(false);
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    boardControl1.Board.Clear();
+                    boardControl1.Draw();
+                }
+                finally
+                {
+                    buttonClear.Invoke(new Action(() =>
+                    {
+                        ToggleSimulationControls(true);
+                    }));
+                }
+            });
+        }
+
+        private void comboBoxBoundaryCondition_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxBoundaryCondition.SelectedItem.ToString() == EnumToString.BoundaryCondition[Bc.Absorbing])
+                boardControl1.Board.BoundaryCondition = Bc.Absorbing;
+            else if (comboBoxBoundaryCondition.SelectedItem.ToString() == EnumToString.BoundaryCondition[Bc.Periodic])
+                boardControl1.Board.BoundaryCondition = Bc.Periodic;
         }
     }
 }

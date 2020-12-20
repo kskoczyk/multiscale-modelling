@@ -16,7 +16,7 @@ namespace Multiscale_Modelling
         private Pen gridPen = new Pen(Color.Black);
 
         public Board Board = new Board();
-		public Action<string, Logs.LogLevel> Log { get; set; } // TESTING TODO: use static instead
+		//public Action<string, Logs.LogLevel> Log { get; set; } // TESTING
 		//public Func<int, sbyte, string> MyProperty { get; set; } // same as Action, but has return type
 		public BoardControl()
         {
@@ -27,9 +27,9 @@ namespace Multiscale_Modelling
 		{
 			base.OnLoad(e);
 
-			Log?.Invoke("CTOR", Logs.LogLevel.Info);
+			//Log?.Invoke("CTOR", Logs.LogLevel.Info);
 			//Task.Run(() => Log("TASK", Logs.LogLevel.Error));
-			this.Invoke(new Action(() => Log?.Invoke("Invoke", Logs.LogLevel.Info)));
+			//this.Invoke(new Action(() => Log?.Invoke("Invoke", Logs.LogLevel.Info)));
 		}
 
         protected override void OnHandleCreated(EventArgs e)

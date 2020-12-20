@@ -51,4 +51,19 @@ namespace Multiscale_Modelling
         }
     }
 
+    public enum Bc
+    {
+        Absorbing,
+        Periodic
+    }
+
+    public static class EnumToString
+    {
+        public static Dictionary<Bc, string> BoundaryCondition = new Dictionary<Bc, string>()
+        {
+            { Bc.Absorbing, "Absorbing" },
+            { Bc.Periodic, "Periodic" }
+        };
+    }
+
 }

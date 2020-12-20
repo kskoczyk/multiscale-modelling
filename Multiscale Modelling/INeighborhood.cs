@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Multiscale_Modelling
 {
-    interface INeighborhood
+    public interface INeighborhood
     {
-        IEnumerable<Cell> MooreNeighborhood(Cell cell);
+        //IEnumerable<Cell> GetNeighborhood(Cell cell); // TODO: possibly a more convenient implementation
+        IEnumerable<int> GetNeighborhood(); // TODO: or change to a type that supports [] operators directly
     }
 }
