@@ -189,5 +189,27 @@ namespace Multiscale_Modelling
             else if (comboBoxBoundaryCondition.SelectedItem.ToString() == EnumToString.BoundaryCondition[Bc.Periodic])
                 boardControl1.Board.BoundaryCondition = Bc.Periodic;
         }
+
+        private void buttonAddInclusions_Click(object sender, EventArgs e)
+        {
+            bool isAnyCellEmpty = boardControl1.Board.GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is Cell;
+            bool isAnyCellFilled = boardControl1.Board.GetAllCells().Where(c => c.Id != 0 && c.Id != -1).FirstOrDefault() is Cell;
+
+            if (!isAnyCellEmpty)
+            {
+                boardControl1.Board.AddInclusions(ToInt32(numericUpDownInclusionsNumber.Value), ToInt32(numericUpDownInclusionsRadius.Value), InclusionType.Border);
+                boardControl1.Draw();
+            }
+            else if (!isAnyCellFilled)
+            {
+                boardControl1.Board.AddInclusions(ToInt32(numericUpDownInclusionsNumber.Value), ToInt32(numericUpDownInclusionsRadius.Value), InclusionType.Random);
+                boardControl1.Draw();
+            }
+            else
+            {
+                Logs.Log("INCLUSION: Cannot add inclusions. The board is only partially filled.", Logs.LogLevel.Error);
+            }
+
+        }
     }
 }

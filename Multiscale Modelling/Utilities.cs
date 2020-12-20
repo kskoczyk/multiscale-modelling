@@ -57,6 +57,12 @@ namespace Multiscale_Modelling
         Periodic
     }
 
+    public enum InclusionType
+    {
+        Random, // on empty board
+        Border
+    }
+
     public static class EnumToString
     {
         public static Dictionary<Bc, string> BoundaryCondition = new Dictionary<Bc, string>()

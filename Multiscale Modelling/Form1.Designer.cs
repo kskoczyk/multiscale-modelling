@@ -59,8 +59,14 @@
             this.labelLog = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.boardControl1 = new Multiscale_Modelling.BoardControl();
             this.checkBoxAnimate = new System.Windows.Forms.CheckBox();
+            this.groupBoxInclusions = new System.Windows.Forms.GroupBox();
+            this.buttonAddInclusions = new System.Windows.Forms.Button();
+            this.labelInclusionsNumber = new System.Windows.Forms.Label();
+            this.labelInclusionsRadius = new System.Windows.Forms.Label();
+            this.numericUpDownInclusionsRadius = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownInclusionsNumber = new System.Windows.Forms.NumericUpDown();
+            this.boardControl1 = new Multiscale_Modelling.BoardControl();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
@@ -69,11 +75,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNucleiNumber)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.groupBoxInclusions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsRadius)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsNumber)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonRun
             // 
-            this.buttonRun.Location = new System.Drawing.Point(271, 341);
+            this.buttonRun.Location = new System.Drawing.Point(271, 396);
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(100, 50);
             this.buttonRun.TabIndex = 0;
@@ -339,10 +348,10 @@
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(18, 341);
+            this.richTextBoxLog.Location = new System.Drawing.Point(18, 396);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
-            this.richTextBoxLog.Size = new System.Drawing.Size(236, 50);
+            this.richTextBoxLog.Size = new System.Drawing.Size(242, 50);
             this.richTextBoxLog.TabIndex = 11;
             this.richTextBoxLog.Text = "";
             this.richTextBoxLog.TextChanged += new System.EventHandler(this.richTextBoxLog_TextChanged);
@@ -350,7 +359,7 @@
             // labelLog
             // 
             this.labelLog.AutoSize = true;
-            this.labelLog.Location = new System.Drawing.Point(15, 321);
+            this.labelLog.Location = new System.Drawing.Point(15, 376);
             this.labelLog.Name = "labelLog";
             this.labelLog.Size = new System.Drawing.Size(32, 17);
             this.labelLog.TabIndex = 12;
@@ -368,11 +377,12 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 400);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 461);
             this.tableLayoutPanel1.TabIndex = 14;
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.groupBoxInclusions);
             this.panel1.Controls.Add(this.checkBoxAnimate);
             this.panel1.Controls.Add(this.groupBoxBoard);
             this.panel1.Controls.Add(this.buttonRun);
@@ -381,8 +391,104 @@
             this.panel1.Controls.Add(this.groupBoxSettings);
             this.panel1.Location = new System.Drawing.Point(346, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(383, 394);
+            this.panel1.Size = new System.Drawing.Size(383, 455);
             this.panel1.TabIndex = 14;
+            // 
+            // checkBoxAnimate
+            // 
+            this.checkBoxAnimate.AutoSize = true;
+            this.checkBoxAnimate.Location = new System.Drawing.Point(271, 369);
+            this.checkBoxAnimate.Name = "checkBoxAnimate";
+            this.checkBoxAnimate.Size = new System.Drawing.Size(81, 21);
+            this.checkBoxAnimate.TabIndex = 11;
+            this.checkBoxAnimate.Text = "Animate";
+            this.checkBoxAnimate.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxInclusions
+            // 
+            this.groupBoxInclusions.Controls.Add(this.buttonAddInclusions);
+            this.groupBoxInclusions.Controls.Add(this.labelInclusionsNumber);
+            this.groupBoxInclusions.Controls.Add(this.labelInclusionsRadius);
+            this.groupBoxInclusions.Controls.Add(this.numericUpDownInclusionsRadius);
+            this.groupBoxInclusions.Controls.Add(this.numericUpDownInclusionsNumber);
+            this.groupBoxInclusions.Location = new System.Drawing.Point(18, 256);
+            this.groupBoxInclusions.Name = "groupBoxInclusions";
+            this.groupBoxInclusions.Size = new System.Drawing.Size(360, 100);
+            this.groupBoxInclusions.TabIndex = 13;
+            this.groupBoxInclusions.TabStop = false;
+            this.groupBoxInclusions.Text = "Inclusions";
+            // 
+            // buttonAddInclusions
+            // 
+            this.buttonAddInclusions.Location = new System.Drawing.Point(268, 40);
+            this.buttonAddInclusions.Name = "buttonAddInclusions";
+            this.buttonAddInclusions.Size = new System.Drawing.Size(85, 23);
+            this.buttonAddInclusions.TabIndex = 14;
+            this.buttonAddInclusions.Text = "Add";
+            this.buttonAddInclusions.UseVisualStyleBackColor = true;
+            this.buttonAddInclusions.Click += new System.EventHandler(this.buttonAddInclusions_Click);
+            // 
+            // labelInclusionsNumber
+            // 
+            this.labelInclusionsNumber.AutoSize = true;
+            this.labelInclusionsNumber.Location = new System.Drawing.Point(3, 18);
+            this.labelInclusionsNumber.Name = "labelInclusionsNumber";
+            this.labelInclusionsNumber.Size = new System.Drawing.Size(58, 17);
+            this.labelInclusionsNumber.TabIndex = 12;
+            this.labelInclusionsNumber.Text = "Number";
+            // 
+            // labelInclusionsRadius
+            // 
+            this.labelInclusionsRadius.AutoSize = true;
+            this.labelInclusionsRadius.Location = new System.Drawing.Point(139, 18);
+            this.labelInclusionsRadius.Name = "labelInclusionsRadius";
+            this.labelInclusionsRadius.Size = new System.Drawing.Size(52, 17);
+            this.labelInclusionsRadius.TabIndex = 13;
+            this.labelInclusionsRadius.Text = "Radius";
+            // 
+            // numericUpDownInclusionsRadius
+            // 
+            this.numericUpDownInclusionsRadius.Location = new System.Drawing.Point(142, 41);
+            this.numericUpDownInclusionsRadius.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownInclusionsRadius.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInclusionsRadius.Name = "numericUpDownInclusionsRadius";
+            this.numericUpDownInclusionsRadius.Size = new System.Drawing.Size(120, 22);
+            this.numericUpDownInclusionsRadius.TabIndex = 11;
+            this.numericUpDownInclusionsRadius.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownInclusionsNumber
+            // 
+            this.numericUpDownInclusionsNumber.Location = new System.Drawing.Point(6, 41);
+            this.numericUpDownInclusionsNumber.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownInclusionsNumber.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInclusionsNumber.Name = "numericUpDownInclusionsNumber";
+            this.numericUpDownInclusionsNumber.Size = new System.Drawing.Size(120, 22);
+            this.numericUpDownInclusionsNumber.TabIndex = 10;
+            this.numericUpDownInclusionsNumber.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // boardControl1
             // 
@@ -392,24 +498,14 @@
             this.boardControl1.IsGridEnabled = false;
             this.boardControl1.Location = new System.Drawing.Point(3, 3);
             this.boardControl1.Name = "boardControl1";
-            this.boardControl1.Size = new System.Drawing.Size(337, 394);
+            this.boardControl1.Size = new System.Drawing.Size(337, 455);
             this.boardControl1.TabIndex = 13;
-            // 
-            // checkBoxAnimate
-            // 
-            this.checkBoxAnimate.AutoSize = true;
-            this.checkBoxAnimate.Location = new System.Drawing.Point(271, 314);
-            this.checkBoxAnimate.Name = "checkBoxAnimate";
-            this.checkBoxAnimate.Size = new System.Drawing.Size(81, 21);
-            this.checkBoxAnimate.TabIndex = 11;
-            this.checkBoxAnimate.Text = "Animate";
-            this.checkBoxAnimate.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 428);
+            this.ClientSize = new System.Drawing.Size(732, 489);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -428,6 +524,10 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBoxInclusions.ResumeLayout(false);
+            this.groupBoxInclusions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsRadius)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsNumber)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -467,6 +567,12 @@
         private System.Windows.Forms.ToolStripMenuItem toTextFiletxtToolStripMenuItemExportTxt;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.CheckBox checkBoxAnimate;
+        private System.Windows.Forms.GroupBox groupBoxInclusions;
+        private System.Windows.Forms.Button buttonAddInclusions;
+        private System.Windows.Forms.Label labelInclusionsNumber;
+        private System.Windows.Forms.Label labelInclusionsRadius;
+        private System.Windows.Forms.NumericUpDown numericUpDownInclusionsRadius;
+        private System.Windows.Forms.NumericUpDown numericUpDownInclusionsNumber;
     }
 }
 

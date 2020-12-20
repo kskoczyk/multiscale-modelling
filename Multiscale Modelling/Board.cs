@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Convert;
 
 
 namespace Multiscale_Modelling
@@ -384,7 +385,7 @@ namespace Multiscale_Modelling
             return listToReturn;
         }
 
-        private Cell GetMostDominantCell(IEnumerable<Cell> cells)
+        public Cell GetMostDominantCell(IEnumerable<Cell> cells)
         {
             IEnumerable<Cell> notNullCells = cells.Where(c => c?.Id >= 0);
             Cell cell = notNullCells.First();
@@ -397,6 +398,142 @@ namespace Multiscale_Modelling
             }
 
             return cell;
+        }
+
+        public void AddInclusions(int number, int radius, InclusionType inclusionsType)
+        {
+            if (!RollRandomInclusions(number, radius, inclusionsType))
+                Logs.Log("Could not set all inclusions", Logs.LogLevel.Warning);
+        }
+
+        public bool RollRandomInclusions(int number, double radius, InclusionType inclusionsType)
+        {
+            int successfulInclusions = 0;
+            int attempts = 0;
+            while (successfulInclusions < number)
+            {
+                if (attempts > RANDOM_ROLL_ATTEMPTS)
+                    return false;
+
+                bool isFailed = false;
+                int rowIndex = RandomDevice.Next(RowCount);
+                int columnIndex = RandomDevice.Next(ColumnCount);
+
+                if (cellList[rowIndex][columnIndex].Id == -1)
+                {
+                    isFailed = true;
+                    attempts++;
+                    continue;
+                }
+                // additionally check if cell is on nucleation border if needed
+                else if (inclusionsType == InclusionType.Border
+                    && cellList[rowIndex][columnIndex].Neighbors.Where(c => c is Cell && c?.Id != -1 && c?.Id != 0).Select(c => c.Id).Distinct().Count() < 2)
+                {
+                    isFailed = true; // not on border (only 1 type of neighbor - self)
+                    attempts++;
+                    continue;
+                }
+
+                // prevent inclusion overlapping
+                GetIndicesInsideCircle(cellList[rowIndex][columnIndex], radius, out IEnumerable<int> xIndices, out IEnumerable<int> yIndices);
+                foreach (int i in yIndices)
+                {
+                    foreach (int j in xIndices)
+                    {
+                        if (cellList[i][j].Id == -1)
+                        {
+                            isFailed = true;
+                            attempts++;
+                        }
+                    }
+                }
+
+                if (!isFailed)
+                {
+                    SetInclusion(cellList[rowIndex][columnIndex], radius);
+                    attempts = 0;
+                    successfulInclusions++;
+                }
+            }
+
+            return true;
+        }
+
+        public void GetIndicesInsideCircle(Cell center, double radius, out IEnumerable<int> xIndices, out IEnumerable<int> yIndices)
+        {
+            int r = ToInt32(Math.Ceiling(radius));
+            xIndices = new List<int>();
+            yIndices = new List<int>();
+
+            if (BoundaryCondition == Bc.Absorbing)
+            {
+                int xMin = Math.Max(center.Position.X - r, 0);
+                int xMax = Math.Min(center.Position.X + r, ColumnCount - 1);
+
+                int yMin = Math.Max(center.Position.Y - r, 0);
+                int yMax = Math.Min(center.Position.Y + r, RowCount - 1);
+
+                xIndices = Enumerable.Range(xMin, xMax - xMin + 1);
+                yIndices = Enumerable.Range(yMin, yMax - yMin + 1);
+
+            }
+            else if (BoundaryCondition == Bc.Periodic)
+            {
+                int xMin = Math.Max(center.Position.X - r, 0);
+                int xMax = Math.Min(center.Position.X + r, ColumnCount - 1);
+
+                int xOverflow = Math.Min(ColumnCount - center.Position.X - r - 1, 0);       // sign "-" if found
+                int xLack = Math.Min(center.Position.X - r, 0);                              // sign "-" if found
+
+
+                int yMin = Math.Max(center.Position.Y - r, 0);
+                int yMax = Math.Min(center.Position.Y + r, RowCount - 1);
+
+                int yOverflow = Math.Min(RowCount - center.Position.Y - r - 1, 0);          // sign "-" if found
+                int yLack = Math.Min(center.Position.Y - r, 0);                              // sign "-" if found
+
+
+                xIndices = Enumerable.Range(xMin, xMax - xMin + 1).Concat(Enumerable.Range(0, Math.Abs(xOverflow))).Concat(Enumerable.Range(ColumnCount - Math.Abs(xLack), Math.Abs(xLack)));
+                yIndices = Enumerable.Range(yMin, yMax - yMin + 1).Concat(Enumerable.Range(0, Math.Abs(yOverflow))).Concat(Enumerable.Range(RowCount - Math.Abs(yLack), Math.Abs(yLack)));
+            }
+        }
+
+        public void SetInclusion(Cell center, double radius)
+        {
+            GetIndicesInsideCircle(center, radius, out IEnumerable<int> xIndices, out IEnumerable<int> yIndices);
+
+            Parallel.ForEach(yIndices, i =>
+            {
+                Parallel.ForEach(xIndices, j =>
+                {
+                    if (IsInRadius(center.Position.X, center.Position.Y, cellList[i][j].Position.X, cellList[i][j].Position.Y, radius))
+                    {
+                        cellList[i][j].SetColor(Color.Black);
+                        cellList[i][j].SetId(-1);
+                    }
+                });
+            });
+        }
+
+        public bool IsInRadius(double x1, double y1, double x2, double y2, double radius)
+        {
+            if (BoundaryCondition == Bc.Absorbing)
+                return Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2) <= radius * radius;
+            else if (BoundaryCondition == Bc.Periodic)
+            {
+                if (Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2) <= radius * radius)                                     // Absorbing
+                    return true;
+                else if (Math.Pow(Math.Abs(x2 - x1) - ColumnCount, 2) + Math.Pow(y2 - y1, 2) <= radius * radius)       // <--- / --->
+                    return true;
+                else if (Math.Pow(x2 - x1, 2) + Math.Pow(Math.Abs(y2 - y1) - RowCount, 2) <= radius * radius)          // ^ / v
+                    return true;
+                else if (Math.Pow(Math.Abs(x2 - x1) - ColumnCount, 2) + Math.Pow(Math.Abs(y2 - y1) - RowCount, 2) <= radius * radius) // <--- / ---> & ^ / v
+                    return true;
+                else
+                    return false;
+            }
+            else
+                throw new Exception();
         }
 
     }
