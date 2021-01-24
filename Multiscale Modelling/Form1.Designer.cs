@@ -67,6 +67,8 @@
             this.numericUpDownInclusionsRadius = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownInclusionsNumber = new System.Windows.Forms.NumericUpDown();
             this.boardControl1 = new Multiscale_Modelling.BoardControl();
+            this.labelInclusionType = new System.Windows.Forms.Label();
+            this.comboBoxInclusionType = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
@@ -82,7 +84,7 @@
             // 
             // buttonRun
             // 
-            this.buttonRun.Location = new System.Drawing.Point(271, 396);
+            this.buttonRun.Location = new System.Drawing.Point(277, 474);
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(100, 50);
             this.buttonRun.TabIndex = 0;
@@ -116,7 +118,7 @@
             this.toolStripSeparator1,
             this.exportToolStripMenuItem});
             this.microstructureToolStripMenuItem.Name = "microstructureToolStripMenuItem";
-            this.microstructureToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.microstructureToolStripMenuItem.Size = new System.Drawing.Size(179, 26);
             this.microstructureToolStripMenuItem.Text = "Microstructure";
             // 
             // importToolStripMenuItem
@@ -125,7 +127,7 @@
             this.toolStripMenuItemImportBmp,
             this.fromTextFiletxtToolStripMenuItemImportTxt});
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.importToolStripMenuItem.Text = "Import";
             // 
             // toolStripMenuItemImportBmp
@@ -145,7 +147,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(126, 6);
             // 
             // exportToolStripMenuItem
             // 
@@ -153,20 +155,20 @@
             this.toBitmapbmpToolStripMenuItemExportBmp,
             this.toTextFiletxtToolStripMenuItemExportTxt});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // toBitmapbmpToolStripMenuItemExportBmp
             // 
             this.toBitmapbmpToolStripMenuItemExportBmp.Name = "toBitmapbmpToolStripMenuItemExportBmp";
-            this.toBitmapbmpToolStripMenuItemExportBmp.Size = new System.Drawing.Size(216, 26);
+            this.toBitmapbmpToolStripMenuItemExportBmp.Size = new System.Drawing.Size(200, 26);
             this.toBitmapbmpToolStripMenuItemExportBmp.Text = "To bitmap (.bmp)";
             this.toBitmapbmpToolStripMenuItemExportBmp.Click += new System.EventHandler(this.toBitmapbmpToolStripMenuItemExportBmp_Click);
             // 
             // toTextFiletxtToolStripMenuItemExportTxt
             // 
             this.toTextFiletxtToolStripMenuItemExportTxt.Name = "toTextFiletxtToolStripMenuItemExportTxt";
-            this.toTextFiletxtToolStripMenuItemExportTxt.Size = new System.Drawing.Size(216, 26);
+            this.toTextFiletxtToolStripMenuItemExportTxt.Size = new System.Drawing.Size(200, 26);
             this.toTextFiletxtToolStripMenuItemExportTxt.Text = "To text file (.txt)";
             this.toTextFiletxtToolStripMenuItemExportTxt.Click += new System.EventHandler(this.toTextFiletxtToolStripMenuItemExportTxt_Click);
             // 
@@ -352,7 +354,7 @@
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(18, 396);
+            this.richTextBoxLog.Location = new System.Drawing.Point(24, 474);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(242, 50);
@@ -363,7 +365,7 @@
             // labelLog
             // 
             this.labelLog.AutoSize = true;
-            this.labelLog.Location = new System.Drawing.Point(15, 376);
+            this.labelLog.Location = new System.Drawing.Point(21, 454);
             this.labelLog.Name = "labelLog";
             this.labelLog.Size = new System.Drawing.Size(32, 17);
             this.labelLog.TabIndex = 12;
@@ -381,7 +383,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 461);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 539);
             this.tableLayoutPanel1.TabIndex = 14;
             // 
             // panel1
@@ -395,13 +397,13 @@
             this.panel1.Controls.Add(this.groupBoxSettings);
             this.panel1.Location = new System.Drawing.Point(346, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(383, 455);
+            this.panel1.Size = new System.Drawing.Size(383, 533);
             this.panel1.TabIndex = 14;
             // 
             // checkBoxAnimate
             // 
             this.checkBoxAnimate.AutoSize = true;
-            this.checkBoxAnimate.Location = new System.Drawing.Point(271, 369);
+            this.checkBoxAnimate.Location = new System.Drawing.Point(277, 447);
             this.checkBoxAnimate.Name = "checkBoxAnimate";
             this.checkBoxAnimate.Size = new System.Drawing.Size(81, 21);
             this.checkBoxAnimate.TabIndex = 11;
@@ -410,6 +412,8 @@
             // 
             // groupBoxInclusions
             // 
+            this.groupBoxInclusions.Controls.Add(this.labelInclusionType);
+            this.groupBoxInclusions.Controls.Add(this.comboBoxInclusionType);
             this.groupBoxInclusions.Controls.Add(this.buttonAddInclusions);
             this.groupBoxInclusions.Controls.Add(this.labelInclusionsNumber);
             this.groupBoxInclusions.Controls.Add(this.labelInclusionsRadius);
@@ -417,7 +421,7 @@
             this.groupBoxInclusions.Controls.Add(this.numericUpDownInclusionsNumber);
             this.groupBoxInclusions.Location = new System.Drawing.Point(18, 256);
             this.groupBoxInclusions.Name = "groupBoxInclusions";
-            this.groupBoxInclusions.Size = new System.Drawing.Size(360, 100);
+            this.groupBoxInclusions.Size = new System.Drawing.Size(360, 131);
             this.groupBoxInclusions.TabIndex = 13;
             this.groupBoxInclusions.TabStop = false;
             this.groupBoxInclusions.Text = "Inclusions";
@@ -455,11 +459,6 @@
             this.numericUpDownInclusionsRadius.Location = new System.Drawing.Point(142, 41);
             this.numericUpDownInclusionsRadius.Maximum = new decimal(new int[] {
             1000,
-            0,
-            0,
-            0});
-            this.numericUpDownInclusionsRadius.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -502,14 +501,31 @@
             this.boardControl1.IsGridEnabled = false;
             this.boardControl1.Location = new System.Drawing.Point(3, 3);
             this.boardControl1.Name = "boardControl1";
-            this.boardControl1.Size = new System.Drawing.Size(337, 455);
+            this.boardControl1.Size = new System.Drawing.Size(337, 533);
             this.boardControl1.TabIndex = 13;
+            // 
+            // labelInclusionType
+            // 
+            this.labelInclusionType.AutoSize = true;
+            this.labelInclusionType.Location = new System.Drawing.Point(3, 66);
+            this.labelInclusionType.Name = "labelInclusionType";
+            this.labelInclusionType.Size = new System.Drawing.Size(99, 17);
+            this.labelInclusionType.TabIndex = 16;
+            this.labelInclusionType.Text = "Inclusion Type";
+            // 
+            // comboBoxInclusionType
+            // 
+            this.comboBoxInclusionType.FormattingEnabled = true;
+            this.comboBoxInclusionType.Location = new System.Drawing.Point(6, 89);
+            this.comboBoxInclusionType.Name = "comboBoxInclusionType";
+            this.comboBoxInclusionType.Size = new System.Drawing.Size(120, 24);
+            this.comboBoxInclusionType.TabIndex = 15;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 489);
+            this.ClientSize = new System.Drawing.Size(732, 567);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -577,6 +593,8 @@
         private System.Windows.Forms.Label labelInclusionsRadius;
         private System.Windows.Forms.NumericUpDown numericUpDownInclusionsRadius;
         private System.Windows.Forms.NumericUpDown numericUpDownInclusionsNumber;
+        private System.Windows.Forms.Label labelInclusionType;
+        private System.Windows.Forms.ComboBox comboBoxInclusionType;
     }
 }
 

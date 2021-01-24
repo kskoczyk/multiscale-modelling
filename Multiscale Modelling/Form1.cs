@@ -200,12 +200,12 @@ namespace Multiscale_Modelling
 
             if (!isAnyCellEmpty)
             {
-                boardControl1.Board.AddInclusions(ToInt32(numericUpDownInclusionsNumber.Value), ToInt32(numericUpDownInclusionsRadius.Value), InclusionType.Border);
+                boardControl1.Board.AddInclusions(ToInt32(numericUpDownInclusionsNumber.Value), ToInt32(numericUpDownInclusionsRadius.Value), E_InclusionType.Border);
                 boardControl1.Draw();
             }
             else if (!isAnyCellFilled)
             {
-                boardControl1.Board.AddInclusions(ToInt32(numericUpDownInclusionsNumber.Value), ToInt32(numericUpDownInclusionsRadius.Value), InclusionType.Random);
+                boardControl1.Board.AddInclusions(ToInt32(numericUpDownInclusionsNumber.Value), ToInt32(numericUpDownInclusionsRadius.Value), E_InclusionType.Random);
                 boardControl1.Draw();
             }
             else

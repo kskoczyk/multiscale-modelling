@@ -57,10 +57,12 @@ namespace Multiscale_Modelling
         Periodic
     }
 
-    public enum InclusionType
+    public enum E_InclusionType
     {
         Random, // on empty board
-        Border
+        Border,
+        Circle,
+        Square
     }
 
     public static class EnumToString
@@ -69,6 +71,12 @@ namespace Multiscale_Modelling
         {
             { Bc.Absorbing, "Absorbing" },
             { Bc.Periodic, "Periodic" }
+        };
+
+        public static Dictionary<E_InclusionType, string> InclusionType = new Dictionary<E_InclusionType, string>()
+        {
+            { E_InclusionType.Circle, "Circle" },
+            { E_InclusionType.Square, "Square" }
         };
     }
 

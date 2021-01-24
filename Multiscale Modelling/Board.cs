@@ -91,10 +91,10 @@ namespace Multiscale_Modelling
             if (ColumnCount == 1)
                 throw new Exception("Last column"); // TODO: use logs
 
-            int columnCount = ColumnCount;
+            int columnCount = ColumnCount; // prevent overwrite when removing from row [0]
             for (int i = 0; i < RowCount; i++)
             {
-                cellList[i].RemoveAt(ColumnCount - 1);
+                cellList[i].RemoveAt(columnCount - 1);
             }
         }
 
@@ -410,13 +410,13 @@ namespace Multiscale_Modelling
             return cell;
         }
 
-        public void AddInclusions(int number, int radius, InclusionType inclusionsType)
+        public void AddInclusions(int number, int radius, E_InclusionType inclusionsType)
         {
             if (!RollRandomInclusions(number, radius, inclusionsType))
                 Logs.Log("Could not set all inclusions", Logs.LogLevel.Warning);
         }
 
-        public bool RollRandomInclusions(int number, double radius, InclusionType inclusionsType)
+        public bool RollRandomInclusions(int number, double radius, E_InclusionType inclusionsType)
         {
             int successfulInclusions = 0;
             int attempts = 0;
@@ -436,7 +436,7 @@ namespace Multiscale_Modelling
                     continue;
                 }
                 // additionally check if cell is on nucleation border if needed
-                else if (inclusionsType == InclusionType.Border
+                else if (inclusionsType == E_InclusionType.Border
                     && cellList[rowIndex][columnIndex].Neighbors.Where(c => c is Cell && c?.Id != -1 && c?.Id != 0).Select(c => c.Id).Distinct().Count() < 2)
                 {
                     isFailed = true; // not on border (only 1 type of neighbor - self)
@@ -478,12 +478,12 @@ namespace Multiscale_Modelling
             if (BoundaryCondition == Bc.Absorbing)
             {
                 int xMin = Math.Max(center.Position.X - r, 0);
-                int xMax = Math.Min(center.Position.X + r, ColumnCount - 1);
-
+                int xMax = Math.Min(center.Position.X + r, ColumnCount - 1); // bug: the board shrunk affecting ColumnCount but the leftover cells weren't cleared
+                // happens when a cell's position's outisde the board
                 int yMin = Math.Max(center.Position.Y - r, 0);
                 int yMax = Math.Min(center.Position.Y + r, RowCount - 1);
 
-                xIndices = Enumerable.Range(xMin, xMax - xMin + 1);
+                xIndices = Enumerable.Range(xMin, xMax - xMin + 1); // TODO bug: 10x10, 30 radius 0 and set to full, then 5x5, 30 radius 0 inclusions
                 yIndices = Enumerable.Range(yMin, yMax - yMin + 1);
 
             }
@@ -492,15 +492,15 @@ namespace Multiscale_Modelling
                 int xMin = Math.Max(center.Position.X - r, 0);
                 int xMax = Math.Min(center.Position.X + r, ColumnCount - 1);
 
-                int xOverflow = Math.Min(ColumnCount - center.Position.X - r - 1, 0);       // sign "-" if found
-                int xLack = Math.Min(center.Position.X - r, 0);                              // sign "-" if found
+                int xOverflow = Math.Min(ColumnCount - center.Position.X - r - 1, 0);
+                int xLack = Math.Min(center.Position.X - r, 0);
 
 
                 int yMin = Math.Max(center.Position.Y - r, 0);
                 int yMax = Math.Min(center.Position.Y + r, RowCount - 1);
 
-                int yOverflow = Math.Min(RowCount - center.Position.Y - r - 1, 0);          // sign "-" if found
-                int yLack = Math.Min(center.Position.Y - r, 0);                              // sign "-" if found
+                int yOverflow = Math.Min(RowCount - center.Position.Y - r - 1, 0);
+                int yLack = Math.Min(center.Position.Y - r, 0);
 
 
                 xIndices = Enumerable.Range(xMin, xMax - xMin + 1).Concat(Enumerable.Range(0, Math.Abs(xOverflow))).Concat(Enumerable.Range(ColumnCount - Math.Abs(xLack), Math.Abs(xLack)));
@@ -531,13 +531,13 @@ namespace Multiscale_Modelling
                 return Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2) <= radius * radius;
             else if (BoundaryCondition == Bc.Periodic)
             {
-                if (Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2) <= radius * radius)                                     // Absorbing
+                if (Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2) <= radius * radius)
                     return true;
-                else if (Math.Pow(Math.Abs(x2 - x1) - ColumnCount, 2) + Math.Pow(y2 - y1, 2) <= radius * radius)       // <--- / --->
+                else if (Math.Pow(Math.Abs(x2 - x1) - ColumnCount, 2) + Math.Pow(y2 - y1, 2) <= radius * radius)
                     return true;
-                else if (Math.Pow(x2 - x1, 2) + Math.Pow(Math.Abs(y2 - y1) - RowCount, 2) <= radius * radius)          // ^ / v
+                else if (Math.Pow(x2 - x1, 2) + Math.Pow(Math.Abs(y2 - y1) - RowCount, 2) <= radius * radius)
                     return true;
-                else if (Math.Pow(Math.Abs(x2 - x1) - ColumnCount, 2) + Math.Pow(Math.Abs(y2 - y1) - RowCount, 2) <= radius * radius) // <--- / ---> & ^ / v
+                else if (Math.Pow(Math.Abs(x2 - x1) - ColumnCount, 2) + Math.Pow(Math.Abs(y2 - y1) - RowCount, 2) <= radius * radius)
                     return true;
                 else
                     return false;
