@@ -17,6 +17,12 @@ namespace Multiscale_Modelling
         private List<List<Cell>> cellList;
         private ConcurrentDictionary<long, Cell> newCells = new ConcurrentDictionary<long, Cell>();
         public INeighborhood NeighborRule { get; set; }
+        public List<IRule> ShapeControlRules = new List<IRule>(new IRule[] { 
+            new FullMoore(), 
+            new NearestMoore(), 
+            new FurtherMoore(), 
+            new ProbabilityChoice() 
+        });
         private Bc _boundaryContition;
         public Bc BoundaryCondition
         {
@@ -30,6 +36,8 @@ namespace Multiscale_Modelling
                 }
             }
         }
+        public E_SimulationType SimulationType { get; set; }
+        public int Probability { get; set; }
 
         public int RowCount => cellList.Count;
         public int ColumnCount => cellList.ElementAtOrDefault(0)?.Count ?? 0;
@@ -372,11 +380,28 @@ namespace Multiscale_Modelling
             Parallel.ForEach(newCells.Keys, i =>
             {
                 Cell cell = newCells[i];
-                Cell mostDominantCell = GetMostDominantCell(cell.Neighbors);
-                cell.NewId = mostDominantCell.Id;
-                cell.NewColor = mostDominantCell.Color;
-                if (cell.NewId > 0)
-                    newColored.Enqueue(cell);
+                Cell mostDominantCell = null;
+
+                if (SimulationType == E_SimulationType.Simple)
+                    mostDominantCell = GetMostDominantCell(cell.Neighbors);
+                else
+                {
+                    foreach (IRule rule in ShapeControlRules)
+                    {
+                        mostDominantCell = rule.GetDominantCell(cell.Neighbors, Probability);
+
+                        if (mostDominantCell is Cell)
+                            break;
+                    }
+                }
+
+                if (mostDominantCell is Cell)
+                {
+                    cell.NewId = mostDominantCell.Id;
+                    cell.NewColor = mostDominantCell.Color;
+                    if (cell.NewId > 0)
+                        newColored.Enqueue(cell);
+                }
             });
 
             LinkedList<Cell> listToReturn = new LinkedList<Cell>();
@@ -401,7 +426,7 @@ namespace Multiscale_Modelling
             Cell cell = notNullCells.First();
 
             IEnumerable<IGrouping<int, Cell>> groups = notNullCells.Where(x => x.Id > 0).GroupBy(c => c.Id).OrderByDescending(x => x.Count());
-            if (groups.Count() > 0)
+            if (groups.Any())
             {
                 IEnumerable<IGrouping<int, Cell>> max = groups.Where(x => x.Count() == groups.First().Count());
                 cell = max.ElementAt(RandomDevice.Next(max.Count())).First();

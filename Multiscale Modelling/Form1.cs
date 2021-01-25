@@ -37,6 +37,9 @@ namespace Multiscale_Modelling
             comboBoxBoundaryCondition.Items.AddRange(EnumToString.BoundaryCondition.Values.ToArray());
             comboBoxBoundaryCondition.SelectedItem = EnumToString.BoundaryCondition[Bc.Absorbing];
 
+            comboBoxSimulationType.Items.AddRange(EnumToString.SimulationType.Values.ToArray());
+            comboBoxSimulationType.SelectedItem = EnumToString.SimulationType[E_SimulationType.Simple];
+
             Logs.Log("Program start", Logs.LogLevel.Other);
         }
         public static IEnumerable<T> GetForms<T>() where T : Form // TESTING gimmick - for getting Form1 instance from other classes
@@ -67,23 +70,30 @@ namespace Multiscale_Modelling
                 try
                 {
                     bool isAnimated = checkBoxAnimate.Checked;
+                    boardControl1.Board.Probability = ToInt32(numericUpDownProbability.Value);
                     if (boardControl1.Board.GetAllCells().Where(c => c.Id != 0 && c.Id != -1).FirstOrDefault() is Cell) // get only mutable cells
                     {
                         boardControl1.Board.InitializeCalculations();
-                        while (boardControl1.Board.GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is Cell)
+                        while (boardControl1.Board.GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is Cell) // null = no more cells to draw
                         {
+                            //Enum.TryParse(comboBoxSimulationType.SelectedItem.ToString(), out E_SimulationType simulationType);
+                            //LinkedList<Cell> cellsToDraw = boardControl1.Board.CalculateNextGeneration((E_SimulationType)Enum.Parse(typeof(E_SimulationType), comboBoxSimulationType.SelectedItem.ToString()));
                             LinkedList<Cell> cellsToDraw = boardControl1.Board.CalculateNextGeneration();
-                            if (checkBoxAnimate.Checked && checkBoxAnimate.Checked == isAnimated)
+
+                            if (cellsToDraw.Any())
                             {
-                                boardControl1.Draw(cellsToDraw);
+                                if (checkBoxAnimate.Checked && checkBoxAnimate.Checked == isAnimated)
+                                {
+                                    boardControl1.Draw(cellsToDraw);
+                                }
+                                else if (checkBoxAnimate.Checked) // check whether board should be animated continously
+                                {
+                                    boardControl1.Draw();
+                                    isAnimated = checkBoxAnimate.Checked;
+                                }
+                                else
+                                    isAnimated = checkBoxAnimate.Checked;
                             }
-                            else if (checkBoxAnimate.Checked) // check whether board should be animated continously
-                            {
-                                boardControl1.Draw();
-                                isAnimated = checkBoxAnimate.Checked;
-                            }
-                            else
-                                isAnimated = checkBoxAnimate.Checked;
                         }
                         boardControl1.Draw();
                     }
@@ -102,7 +112,6 @@ namespace Multiscale_Modelling
     private void checkBoxDisplayGrid_CheckedChanged(object sender, EventArgs e)
         {
             boardControl1.IsGridEnabled = checkBoxDisplayGrid.Checked;
-
         }
 
         private void buttonSetBoard_Click(object sender, EventArgs e)
@@ -315,6 +324,26 @@ namespace Multiscale_Modelling
                 }
             }
 
+        }
+
+        private void comboBoxSimulationType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxSimulationType.SelectedItem.ToString() == EnumToString.SimulationType[E_SimulationType.ShapeControl])
+            {
+                numericUpDownProbability.Enabled = true;
+                //Enum.TryParse(comboBoxSimulationType.SelectedItem.ToString(), out SimulationType);
+                boardControl1.Board.SimulationType = E_SimulationType.ShapeControl;
+            }
+            else if (comboBoxSimulationType.SelectedItem.ToString() == EnumToString.SimulationType[E_SimulationType.Simple])
+            {
+                numericUpDownProbability.Enabled = false;
+                boardControl1.Board.SimulationType = E_SimulationType.Simple;
+            }
+        }
+
+        private void numericUpDownProbability_Leave(object sender, EventArgs e)
+        {
+            boardControl1.Board.Probability = ToInt32(numericUpDownProbability.Value);
         }
     }
 }

@@ -65,6 +65,12 @@ namespace Multiscale_Modelling
         Square
     }
 
+    public enum E_SimulationType
+    {
+        Simple,
+        ShapeControl
+    }
+
     public static class EnumToString
     {
         public static Dictionary<Bc, string> BoundaryCondition = new Dictionary<Bc, string>()
@@ -77,6 +83,12 @@ namespace Multiscale_Modelling
         {
             { E_InclusionType.Circle, "Circle" },
             { E_InclusionType.Square, "Square" }
+        };
+
+        public static Dictionary<E_SimulationType, string> SimulationType = new Dictionary<E_SimulationType, string>()
+        {
+            { E_SimulationType.Simple, "Simple" },
+            { E_SimulationType.ShapeControl, "Shape Control" }
         };
     }
 

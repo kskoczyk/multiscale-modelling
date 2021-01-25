@@ -41,12 +41,13 @@
             this.toBitmapbmpToolStripMenuItemExportBmp = new System.Windows.Forms.ToolStripMenuItem();
             this.toTextFiletxtToolStripMenuItemExportTxt = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.numericUpDownX = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownY = new System.Windows.Forms.NumericUpDown();
-            this.labelXSize = new System.Windows.Forms.Label();
+            this.labelSimulationType = new System.Windows.Forms.Label();
             this.labelYSize = new System.Windows.Forms.Label();
             this.checkBoxDisplayGrid = new System.Windows.Forms.CheckBox();
             this.groupBoxBoard = new System.Windows.Forms.GroupBox();
+            this.labelXSize = new System.Windows.Forms.Label();
+            this.numericUpDownX = new System.Windows.Forms.NumericUpDown();
             this.buttonClear = new System.Windows.Forms.Button();
             this.buttonSetBoard = new System.Windows.Forms.Button();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
@@ -59,24 +60,30 @@
             this.labelLog = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBoxAnimate = new System.Windows.Forms.CheckBox();
+            this.groupBoxSimulation = new System.Windows.Forms.GroupBox();
+            this.labelProbability = new System.Windows.Forms.Label();
+            this.numericUpDownProbability = new System.Windows.Forms.NumericUpDown();
+            this.comboBoxSimulationType = new System.Windows.Forms.ComboBox();
             this.groupBoxInclusions = new System.Windows.Forms.GroupBox();
+            this.labelInclusionType = new System.Windows.Forms.Label();
+            this.comboBoxInclusionType = new System.Windows.Forms.ComboBox();
             this.buttonAddInclusions = new System.Windows.Forms.Button();
             this.labelInclusionsNumber = new System.Windows.Forms.Label();
             this.labelInclusionsRadius = new System.Windows.Forms.Label();
             this.numericUpDownInclusionsRadius = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownInclusionsNumber = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxAnimate = new System.Windows.Forms.CheckBox();
             this.boardControl1 = new Multiscale_Modelling.BoardControl();
-            this.labelInclusionType = new System.Windows.Forms.Label();
-            this.comboBoxInclusionType = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
             this.groupBoxBoard.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
             this.groupBoxSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNucleiNumber)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.groupBoxSimulation.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownProbability)).BeginInit();
             this.groupBoxInclusions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsNumber)).BeginInit();
@@ -84,7 +91,7 @@
             // 
             // buttonRun
             // 
-            this.buttonRun.Location = new System.Drawing.Point(277, 474);
+            this.buttonRun.Location = new System.Drawing.Point(277, 639);
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(100, 50);
             this.buttonRun.TabIndex = 0;
@@ -99,7 +106,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(732, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(732, 30);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -108,7 +115,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.microstructureToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // microstructureToolStripMenuItem
@@ -118,7 +125,7 @@
             this.toolStripSeparator1,
             this.exportToolStripMenuItem});
             this.microstructureToolStripMenuItem.Name = "microstructureToolStripMenuItem";
-            this.microstructureToolStripMenuItem.Size = new System.Drawing.Size(179, 26);
+            this.microstructureToolStripMenuItem.Size = new System.Drawing.Size(187, 26);
             this.microstructureToolStripMenuItem.Text = "Microstructure";
             // 
             // importToolStripMenuItem
@@ -127,27 +134,27 @@
             this.toolStripMenuItemImportBmp,
             this.fromTextFiletxtToolStripMenuItemImportTxt});
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
             this.importToolStripMenuItem.Text = "Import";
             // 
             // toolStripMenuItemImportBmp
             // 
             this.toolStripMenuItemImportBmp.Name = "toolStripMenuItemImportBmp";
-            this.toolStripMenuItemImportBmp.Size = new System.Drawing.Size(218, 26);
+            this.toolStripMenuItemImportBmp.Size = new System.Drawing.Size(226, 26);
             this.toolStripMenuItemImportBmp.Text = "From bitmap (.bmp)";
             this.toolStripMenuItemImportBmp.Click += new System.EventHandler(this.toolStripMenuItemImportBmp_Click);
             // 
             // fromTextFiletxtToolStripMenuItemImportTxt
             // 
             this.fromTextFiletxtToolStripMenuItemImportTxt.Name = "fromTextFiletxtToolStripMenuItemImportTxt";
-            this.fromTextFiletxtToolStripMenuItemImportTxt.Size = new System.Drawing.Size(218, 26);
+            this.fromTextFiletxtToolStripMenuItemImportTxt.Size = new System.Drawing.Size(226, 26);
             this.fromTextFiletxtToolStripMenuItemImportTxt.Text = "From text file (.txt)";
             this.fromTextFiletxtToolStripMenuItemImportTxt.Click += new System.EventHandler(this.fromTextFiletxtToolStripMenuItemImportTxt_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(126, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
             // 
             // exportToolStripMenuItem
             // 
@@ -155,20 +162,20 @@
             this.toBitmapbmpToolStripMenuItemExportBmp,
             this.toTextFiletxtToolStripMenuItemExportTxt});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // toBitmapbmpToolStripMenuItemExportBmp
             // 
             this.toBitmapbmpToolStripMenuItemExportBmp.Name = "toBitmapbmpToolStripMenuItemExportBmp";
-            this.toBitmapbmpToolStripMenuItemExportBmp.Size = new System.Drawing.Size(200, 26);
+            this.toBitmapbmpToolStripMenuItemExportBmp.Size = new System.Drawing.Size(208, 26);
             this.toBitmapbmpToolStripMenuItemExportBmp.Text = "To bitmap (.bmp)";
             this.toBitmapbmpToolStripMenuItemExportBmp.Click += new System.EventHandler(this.toBitmapbmpToolStripMenuItemExportBmp_Click);
             // 
             // toTextFiletxtToolStripMenuItemExportTxt
             // 
             this.toTextFiletxtToolStripMenuItemExportTxt.Name = "toTextFiletxtToolStripMenuItemExportTxt";
-            this.toTextFiletxtToolStripMenuItemExportTxt.Size = new System.Drawing.Size(200, 26);
+            this.toTextFiletxtToolStripMenuItemExportTxt.Size = new System.Drawing.Size(208, 26);
             this.toTextFiletxtToolStripMenuItemExportTxt.Text = "To text file (.txt)";
             this.toTextFiletxtToolStripMenuItemExportTxt.Click += new System.EventHandler(this.toTextFiletxtToolStripMenuItemExportTxt_Click);
             // 
@@ -177,29 +184,6 @@
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // numericUpDownX
-            // 
-            this.numericUpDownX.Location = new System.Drawing.Point(6, 41);
-            this.numericUpDownX.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numericUpDownX.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownX.Name = "numericUpDownX";
-            this.numericUpDownX.Size = new System.Drawing.Size(120, 22);
-            this.numericUpDownX.TabIndex = 4;
-            this.numericUpDownX.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownX.Leave += new System.EventHandler(this.numericUpDownX_Leave);
             // 
             // numericUpDownY
             // 
@@ -224,14 +208,14 @@
             0});
             this.numericUpDownY.Leave += new System.EventHandler(this.numericUpDownY_Leave);
             // 
-            // labelXSize
+            // labelSimulationType
             // 
-            this.labelXSize.AutoSize = true;
-            this.labelXSize.Location = new System.Drawing.Point(3, 18);
-            this.labelXSize.Name = "labelXSize";
-            this.labelXSize.Size = new System.Drawing.Size(41, 17);
-            this.labelXSize.TabIndex = 6;
-            this.labelXSize.Text = "xSize";
+            this.labelSimulationType.AutoSize = true;
+            this.labelSimulationType.Location = new System.Drawing.Point(6, 18);
+            this.labelSimulationType.Name = "labelSimulationType";
+            this.labelSimulationType.Size = new System.Drawing.Size(109, 17);
+            this.labelSimulationType.TabIndex = 6;
+            this.labelSimulationType.Text = "Simulation Type";
             // 
             // labelYSize
             // 
@@ -255,19 +239,51 @@
             // 
             // groupBoxBoard
             // 
+            this.groupBoxBoard.Controls.Add(this.labelXSize);
+            this.groupBoxBoard.Controls.Add(this.numericUpDownX);
             this.groupBoxBoard.Controls.Add(this.buttonClear);
             this.groupBoxBoard.Controls.Add(this.buttonSetBoard);
-            this.groupBoxBoard.Controls.Add(this.labelXSize);
             this.groupBoxBoard.Controls.Add(this.checkBoxDisplayGrid);
             this.groupBoxBoard.Controls.Add(this.labelYSize);
             this.groupBoxBoard.Controls.Add(this.numericUpDownY);
-            this.groupBoxBoard.Controls.Add(this.numericUpDownX);
-            this.groupBoxBoard.Location = new System.Drawing.Point(18, 12);
+            this.groupBoxBoard.Location = new System.Drawing.Point(14, 128);
             this.groupBoxBoard.Name = "groupBoxBoard";
             this.groupBoxBoard.Size = new System.Drawing.Size(360, 99);
             this.groupBoxBoard.TabIndex = 9;
             this.groupBoxBoard.TabStop = false;
             this.groupBoxBoard.Text = "Board control";
+            // 
+            // labelXSize
+            // 
+            this.labelXSize.AutoSize = true;
+            this.labelXSize.Location = new System.Drawing.Point(7, 18);
+            this.labelXSize.Name = "labelXSize";
+            this.labelXSize.Size = new System.Drawing.Size(41, 17);
+            this.labelXSize.TabIndex = 12;
+            this.labelXSize.Text = "xSize";
+            // 
+            // numericUpDownX
+            // 
+            this.numericUpDownX.Location = new System.Drawing.Point(6, 41);
+            this.numericUpDownX.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownX.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownX.Name = "numericUpDownX";
+            this.numericUpDownX.Size = new System.Drawing.Size(120, 22);
+            this.numericUpDownX.TabIndex = 11;
+            this.numericUpDownX.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownX.Leave += new System.EventHandler(this.numericUpDownX_Leave);
             // 
             // buttonClear
             // 
@@ -296,7 +312,7 @@
             this.groupBoxSettings.Controls.Add(this.buttonRandom);
             this.groupBoxSettings.Controls.Add(this.labelNuclei);
             this.groupBoxSettings.Controls.Add(this.numericUpDownNucleiNumber);
-            this.groupBoxSettings.Location = new System.Drawing.Point(18, 117);
+            this.groupBoxSettings.Location = new System.Drawing.Point(14, 233);
             this.groupBoxSettings.Name = "groupBoxSettings";
             this.groupBoxSettings.Size = new System.Drawing.Size(360, 132);
             this.groupBoxSettings.TabIndex = 10;
@@ -314,6 +330,7 @@
             // 
             // comboBoxBoundaryCondition
             // 
+            this.comboBoxBoundaryCondition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxBoundaryCondition.FormattingEnabled = true;
             this.comboBoxBoundaryCondition.Location = new System.Drawing.Point(6, 89);
             this.comboBoxBoundaryCondition.Name = "comboBoxBoundaryCondition";
@@ -354,7 +371,7 @@
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(24, 474);
+            this.richTextBoxLog.Location = new System.Drawing.Point(24, 639);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(242, 50);
@@ -365,7 +382,7 @@
             // labelLog
             // 
             this.labelLog.AutoSize = true;
-            this.labelLog.Location = new System.Drawing.Point(21, 454);
+            this.labelLog.Location = new System.Drawing.Point(21, 619);
             this.labelLog.Name = "labelLog";
             this.labelLog.Size = new System.Drawing.Size(32, 17);
             this.labelLog.TabIndex = 12;
@@ -379,15 +396,16 @@
             this.tableLayoutPanel1.Controls.Add(this.boardControl1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 28);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 30);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 539);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 704);
             this.tableLayoutPanel1.TabIndex = 14;
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.groupBoxSimulation);
             this.panel1.Controls.Add(this.groupBoxInclusions);
             this.panel1.Controls.Add(this.checkBoxAnimate);
             this.panel1.Controls.Add(this.groupBoxBoard);
@@ -397,18 +415,59 @@
             this.panel1.Controls.Add(this.groupBoxSettings);
             this.panel1.Location = new System.Drawing.Point(346, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(383, 533);
+            this.panel1.Size = new System.Drawing.Size(383, 698);
             this.panel1.TabIndex = 14;
             // 
-            // checkBoxAnimate
+            // groupBoxSimulation
             // 
-            this.checkBoxAnimate.AutoSize = true;
-            this.checkBoxAnimate.Location = new System.Drawing.Point(277, 447);
-            this.checkBoxAnimate.Name = "checkBoxAnimate";
-            this.checkBoxAnimate.Size = new System.Drawing.Size(81, 21);
-            this.checkBoxAnimate.TabIndex = 11;
-            this.checkBoxAnimate.Text = "Animate";
-            this.checkBoxAnimate.UseVisualStyleBackColor = true;
+            this.groupBoxSimulation.Controls.Add(this.labelProbability);
+            this.groupBoxSimulation.Controls.Add(this.numericUpDownProbability);
+            this.groupBoxSimulation.Controls.Add(this.comboBoxSimulationType);
+            this.groupBoxSimulation.Controls.Add(this.labelSimulationType);
+            this.groupBoxSimulation.Location = new System.Drawing.Point(14, 3);
+            this.groupBoxSimulation.Name = "groupBoxSimulation";
+            this.groupBoxSimulation.Size = new System.Drawing.Size(360, 119);
+            this.groupBoxSimulation.TabIndex = 11;
+            this.groupBoxSimulation.TabStop = false;
+            this.groupBoxSimulation.Text = "Simulation";
+            // 
+            // labelProbability
+            // 
+            this.labelProbability.AutoSize = true;
+            this.labelProbability.Location = new System.Drawing.Point(6, 65);
+            this.labelProbability.Name = "labelProbability";
+            this.labelProbability.Size = new System.Drawing.Size(180, 17);
+            this.labelProbability.TabIndex = 15;
+            this.labelProbability.Text = "Probability of a new cell [%]";
+            // 
+            // numericUpDownProbability
+            // 
+            this.numericUpDownProbability.Enabled = false;
+            this.numericUpDownProbability.Location = new System.Drawing.Point(6, 85);
+            this.numericUpDownProbability.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownProbability.Name = "numericUpDownProbability";
+            this.numericUpDownProbability.Size = new System.Drawing.Size(120, 22);
+            this.numericUpDownProbability.TabIndex = 14;
+            this.numericUpDownProbability.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDownProbability.Leave += new System.EventHandler(this.numericUpDownProbability_Leave);
+            // 
+            // comboBoxSimulationType
+            // 
+            this.comboBoxSimulationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSimulationType.FormattingEnabled = true;
+            this.comboBoxSimulationType.Location = new System.Drawing.Point(6, 38);
+            this.comboBoxSimulationType.Name = "comboBoxSimulationType";
+            this.comboBoxSimulationType.Size = new System.Drawing.Size(120, 24);
+            this.comboBoxSimulationType.TabIndex = 14;
+            this.comboBoxSimulationType.SelectedIndexChanged += new System.EventHandler(this.comboBoxSimulationType_SelectedIndexChanged);
             // 
             // groupBoxInclusions
             // 
@@ -419,12 +478,30 @@
             this.groupBoxInclusions.Controls.Add(this.labelInclusionsRadius);
             this.groupBoxInclusions.Controls.Add(this.numericUpDownInclusionsRadius);
             this.groupBoxInclusions.Controls.Add(this.numericUpDownInclusionsNumber);
-            this.groupBoxInclusions.Location = new System.Drawing.Point(18, 256);
+            this.groupBoxInclusions.Location = new System.Drawing.Point(14, 372);
             this.groupBoxInclusions.Name = "groupBoxInclusions";
             this.groupBoxInclusions.Size = new System.Drawing.Size(360, 131);
             this.groupBoxInclusions.TabIndex = 13;
             this.groupBoxInclusions.TabStop = false;
             this.groupBoxInclusions.Text = "Inclusions";
+            // 
+            // labelInclusionType
+            // 
+            this.labelInclusionType.AutoSize = true;
+            this.labelInclusionType.Location = new System.Drawing.Point(3, 66);
+            this.labelInclusionType.Name = "labelInclusionType";
+            this.labelInclusionType.Size = new System.Drawing.Size(99, 17);
+            this.labelInclusionType.TabIndex = 16;
+            this.labelInclusionType.Text = "Inclusion Type";
+            // 
+            // comboBoxInclusionType
+            // 
+            this.comboBoxInclusionType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxInclusionType.FormattingEnabled = true;
+            this.comboBoxInclusionType.Location = new System.Drawing.Point(6, 89);
+            this.comboBoxInclusionType.Name = "comboBoxInclusionType";
+            this.comboBoxInclusionType.Size = new System.Drawing.Size(120, 24);
+            this.comboBoxInclusionType.TabIndex = 15;
             // 
             // buttonAddInclusions
             // 
@@ -493,6 +570,16 @@
             0,
             0});
             // 
+            // checkBoxAnimate
+            // 
+            this.checkBoxAnimate.AutoSize = true;
+            this.checkBoxAnimate.Location = new System.Drawing.Point(277, 612);
+            this.checkBoxAnimate.Name = "checkBoxAnimate";
+            this.checkBoxAnimate.Size = new System.Drawing.Size(81, 21);
+            this.checkBoxAnimate.TabIndex = 11;
+            this.checkBoxAnimate.Text = "Animate";
+            this.checkBoxAnimate.UseVisualStyleBackColor = true;
+            // 
             // boardControl1
             // 
             this.boardControl1.CellNumberHeight = 0;
@@ -501,31 +588,14 @@
             this.boardControl1.IsGridEnabled = false;
             this.boardControl1.Location = new System.Drawing.Point(3, 3);
             this.boardControl1.Name = "boardControl1";
-            this.boardControl1.Size = new System.Drawing.Size(337, 533);
+            this.boardControl1.Size = new System.Drawing.Size(337, 698);
             this.boardControl1.TabIndex = 13;
-            // 
-            // labelInclusionType
-            // 
-            this.labelInclusionType.AutoSize = true;
-            this.labelInclusionType.Location = new System.Drawing.Point(3, 66);
-            this.labelInclusionType.Name = "labelInclusionType";
-            this.labelInclusionType.Size = new System.Drawing.Size(99, 17);
-            this.labelInclusionType.TabIndex = 16;
-            this.labelInclusionType.Text = "Inclusion Type";
-            // 
-            // comboBoxInclusionType
-            // 
-            this.comboBoxInclusionType.FormattingEnabled = true;
-            this.comboBoxInclusionType.Location = new System.Drawing.Point(6, 89);
-            this.comboBoxInclusionType.Name = "comboBoxInclusionType";
-            this.comboBoxInclusionType.Size = new System.Drawing.Size(120, 24);
-            this.comboBoxInclusionType.TabIndex = 15;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 567);
+            this.ClientSize = new System.Drawing.Size(732, 734);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -534,16 +604,19 @@
             this.Text = "Form1";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).EndInit();
             this.groupBoxBoard.ResumeLayout(false);
             this.groupBoxBoard.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).EndInit();
             this.groupBoxSettings.ResumeLayout(false);
             this.groupBoxSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNucleiNumber)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBoxSimulation.ResumeLayout(false);
+            this.groupBoxSimulation.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownProbability)).EndInit();
             this.groupBoxInclusions.ResumeLayout(false);
             this.groupBoxInclusions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsRadius)).EndInit();
@@ -562,9 +635,8 @@
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.NumericUpDown numericUpDownX;
         private System.Windows.Forms.NumericUpDown numericUpDownY;
-        private System.Windows.Forms.Label labelXSize;
+        private System.Windows.Forms.Label labelSimulationType;
         private System.Windows.Forms.Label labelYSize;
         private System.Windows.Forms.CheckBox checkBoxDisplayGrid;
         private System.Windows.Forms.GroupBox groupBoxBoard;
@@ -595,6 +667,12 @@
         private System.Windows.Forms.NumericUpDown numericUpDownInclusionsNumber;
         private System.Windows.Forms.Label labelInclusionType;
         private System.Windows.Forms.ComboBox comboBoxInclusionType;
+        private System.Windows.Forms.GroupBox groupBoxSimulation;
+        private System.Windows.Forms.ComboBox comboBoxSimulationType;
+        private System.Windows.Forms.Label labelProbability;
+        private System.Windows.Forms.NumericUpDown numericUpDownProbability;
+        private System.Windows.Forms.Label labelXSize;
+        private System.Windows.Forms.NumericUpDown numericUpDownX;
     }
 }
 
