@@ -16,6 +16,7 @@ namespace Multiscale_Modelling
         private int bitmapSize;
         private Pen gridPen = new Pen(Color.Black);
         private SolidBrush phaseBrush = new SolidBrush(Color.DeepPink);
+        private object _lock = new object();
         private E_SelectionMode selectionMode = E_SelectionMode.Phase;
 
         public Cell SelectedCell = null;

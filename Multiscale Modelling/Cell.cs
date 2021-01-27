@@ -52,7 +52,7 @@ namespace Multiscale_Modelling
             Id = id;
             NewId = id;
         }
-        private object _lock = new object();
+        //private object _lock = new object();
         public void SetColor(Color color)
         {
             Color = color;

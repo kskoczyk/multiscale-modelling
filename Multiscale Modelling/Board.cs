@@ -140,15 +140,24 @@ namespace Multiscale_Modelling
         public void RollRandomCells(int numberOfCells, int minRangeX = 0, int minRangeY = 0, int? maxRangeX = null, int? maxRangeY = null)
         {
             int attempts = 0;
-            int i = 1;
+            int i = 0;
+
+            //IEnumerable<Cell> zeroCells = cellList.SelectMany(x => x).Where(c => c.Id == 0).ToList();
+            //int minX = zeroCells.Min(c => c.Position.X);
+            //int maxX = zeroCells.Max(c => c.Position.X) + 1;
+            //int minY = zeroCells.Min(c => c.Position.Y);
+            //int maxY = zeroCells.Max(c => c.Position.Y) + 1;
 
             maxRangeX = maxRangeX ?? ColumnCount;
             maxRangeY = maxRangeY ?? RowCount;
 
-            while (i <= numberOfCells && attempts < RANDOM_ROLL_ATTEMPTS)
+            while (i < numberOfCells && attempts < RANDOM_ROLL_ATTEMPTS)
             {
                 int x = RandomDevice.Next(minRangeX, maxRangeX.Value);
                 int y = RandomDevice.Next(minRangeY, maxRangeY.Value);
+
+                //int x = RandomDevice.Next(minX, maxX);
+                //int y = RandomDevice.Next(minY, maxY);
 
                 Cell cell = GetCell(row: y, column: x);
                 if (cell.Id == 0)
@@ -164,12 +173,30 @@ namespace Multiscale_Modelling
                 attempts++;
             }
 
-            if (i < numberOfCells + 1)
+            if (i < numberOfCells)
             {
-                int successfulRolls = i - 1;
-                // TODO: use $"string {var}"
-                // TODO: sometimes doesn't find empty cell
-                Logs.Log("RANDOM: Could not assign random cells. " + successfulRolls + "/" + numberOfCells + " rolled.", Logs.LogLevel.Warning);
+                int successfulRolls = i;
+                Logs.Log($"RANDOM: Could not assign random cells. {successfulRolls}/{numberOfCells} rolled.", Logs.LogLevel.Warning);
+                List<Cell> zeroCells = cellList.SelectMany(x => x).Where(c => c.Id == 0).ToList();
+
+                if (zeroCells.Count() > 0) // failsafe in case of random failing to meet the quota
+                {
+                    _ = 9;
+                    Logs.Log("Attempting to fill remaining cells sequentially...", Logs.LogLevel.Info);
+
+                    //List<Cell> list = zeroCells.ToList();
+                    for (int it = 0; it < zeroCells.Count() && i < numberOfCells; it++)
+                    {
+                        Cell cell = zeroCells[it];
+                        cell.NewId = Cell.UniqueSeeds;
+                        cell.SetColor(Color.FromArgb(RandomDevice.Next(1, 255), RandomDevice.Next(1, 255), RandomDevice.Next(1, 255)));
+                        cell.UpdateId();
+                        i++;
+                        Cell.UniqueSeeds++;
+                    }
+
+                    Logs.Log($"Assigned {i - successfulRolls} more cells ({i}/{numberOfCells})", Logs.LogLevel.Info);
+                }
             }
         }
         public void SetBoundaryConditions()
