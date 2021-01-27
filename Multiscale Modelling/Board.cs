@@ -137,14 +137,18 @@ namespace Multiscale_Modelling
             SetBoundaryConditions();
         }
 
-        public void RollRandomCells(int numberOfCells)
+        public void RollRandomCells(int numberOfCells, int minRangeX = 0, int minRangeY = 0, int? maxRangeX = null, int? maxRangeY = null)
         {
             int attempts = 0;
             int i = 1;
+
+            maxRangeX = maxRangeX ?? ColumnCount;
+            maxRangeY = maxRangeY ?? RowCount;
+
             while (i <= numberOfCells && attempts < RANDOM_ROLL_ATTEMPTS)
             {
-                int x = RandomDevice.Next(ColumnCount);
-                int y = RandomDevice.Next(RowCount);
+                int x = RandomDevice.Next(minRangeX, maxRangeX.Value);
+                int y = RandomDevice.Next(minRangeY, maxRangeY.Value);
 
                 Cell cell = GetCell(row: y, column: x);
                 if (cell.Id == 0)
@@ -163,6 +167,8 @@ namespace Multiscale_Modelling
             if (i < numberOfCells + 1)
             {
                 int successfulRolls = i - 1;
+                // TODO: use $"string {var}"
+                // TODO: sometimes doesn't find empty cell
                 Logs.Log("RANDOM: Could not assign random cells. " + successfulRolls + "/" + numberOfCells + " rolled.", Logs.LogLevel.Warning);
             }
         }
@@ -632,6 +638,17 @@ namespace Multiscale_Modelling
             //{
             //    cell.SetColor(Color.Red);
             //}
+        }
+
+        public (Point minRange, Point maxRange) GetGroupRange(IGrouping<int, Cell> group)
+        {
+            //People.Min(p => p.DateOfBirth.GetValueOrDefault(DateTime.MaxValue));
+            int minX = group.Min(c => c.Position.X);
+            int maxX = group.Max(c => c.Position.X);
+            int minY = group.Min(c => c.Position.Y);
+            int maxY = group.Max(c => c.Position.Y);
+
+            return (new Point(minX, minY), new Point(maxX, maxY));
         }
     }
 }

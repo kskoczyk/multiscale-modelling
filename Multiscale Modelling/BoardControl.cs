@@ -272,7 +272,7 @@ namespace Multiscale_Modelling
                 // option ++
                 // option = option % 
                 // var namesCount = Enum.GetNames(typeof(MyEnum)).Length;
-                var test = SelectedCell.GetNeighborsByPreviousId(SelectedCell.PreviousId);
+                //var test = SelectedCell.GetNeighborsByPreviousId(SelectedCell.PreviousId);
                 int a = 0;
             }
         }

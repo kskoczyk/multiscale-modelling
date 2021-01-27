@@ -74,12 +74,13 @@ namespace Multiscale_Modelling
                     boardControl1.Board.Probability = ToInt32(numericUpDownProbability.Value);
                     if(isSimulationFinished)
                     {
-                        IEnumerable<IGrouping<int, Cell>> groupsToDraw = boardControl1.Board.GetPhaseOneGroups();
+                        IEnumerable<IGrouping<int, Cell>> groupsToDraw = boardControl1.Board.GetPhaseOneGroups().ToList();
 
                         foreach(IGrouping<int, Cell> group in groupsToDraw)
                         {
                             boardControl1.Board.ClearGroup(group);
-                            boardControl1.Board.RollRandomCells(ToInt32(numericUpDownNucleiNumber.Value));
+                            (Point minRange, Point maxRange) = boardControl1.Board.GetGroupRange(group);
+                            boardControl1.Board.RollRandomCells(ToInt32(numericUpDownNucleiNumber.Value), minRange.X, minRange.Y, maxRange.X + 1, maxRange.Y + 1);
                             boardControl1.Draw();
 
                             boardControl1.Board.InitializeCalculations();

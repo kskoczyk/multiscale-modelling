@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -17,14 +18,15 @@ namespace Multiscale_Modelling
         public Board Board { get; private set; }
         public int Phase { get; set; }
 
-        public static Dictionary<int, SolidBrush> UniqueColors = new Dictionary<int, SolidBrush>()
-        {
-            // reserve for special uses
-            { Color.White.ToArgb(), new SolidBrush(Color.White) },
-            { Color.Black.ToArgb(), new SolidBrush(Color.Black) },
-            { Color.DeepPink.ToArgb(), new SolidBrush(Color.DeepPink) },
-            { Color.Aqua.ToArgb(), new SolidBrush(Color.Aqua) } // TODO: they might be used in BoardControl instead
-        };
+        public static ConcurrentDictionary<int, SolidBrush> UniqueColors = new ConcurrentDictionary<int, SolidBrush>(
+            new Dictionary<int, SolidBrush>
+            { 
+                // reserve for special uses
+                { Color.White.ToArgb(), new SolidBrush(Color.White) },
+                { Color.Black.ToArgb(), new SolidBrush(Color.Black) },
+                { Color.DeepPink.ToArgb(), new SolidBrush(Color.DeepPink) },
+                { Color.Aqua.ToArgb(), new SolidBrush(Color.Aqua) } // TODO: they might be used in BoardControl instead
+            });
 
         public Cell(Point position, Board board, int phase = 0)
         {
@@ -50,12 +52,16 @@ namespace Multiscale_Modelling
             Id = id;
             NewId = id;
         }
+        private object _lock = new object();
         public void SetColor(Color color)
         {
             Color = color;
             NewColor = color;
-            if (!UniqueColors.TryGetValue(color.ToArgb(), out SolidBrush _))
-                UniqueColors.Add(color.ToArgb(), new SolidBrush(color));
+            //lock (_lock)
+            //{
+                //if (!UniqueColors.TryGetValue(color.ToArgb(), out SolidBrush _))
+                    UniqueColors.TryAdd(color.ToArgb(), new SolidBrush(color)); 
+            //}
         }
 
         public void UpdateId()
@@ -66,7 +72,7 @@ namespace Multiscale_Modelling
 
         public Cell[] GetNeighborsByPreviousId(int id) // used for setting borders in 2nd phase
         {
-            Cell[] neighborsById = new Cell[] { null, null, null, null, null, null, null, null };
+            Cell[] neighborsById = new Cell[8];
 
             for (int i = 0; i < Neighbors.Count(); i++)
             {
