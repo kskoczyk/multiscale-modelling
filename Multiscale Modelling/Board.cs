@@ -16,6 +16,7 @@ namespace Multiscale_Modelling
         private const int RANDOM_ROLL_ATTEMPTS = 1000;
         private List<List<Cell>> cellList;
         private ConcurrentDictionary<long, Cell> newCells = new ConcurrentDictionary<long, Cell>();
+        private Color selectionColor = Color.Yellow;
         public INeighborhood NeighborRule { get; set; }
         public List<IRule> ShapeControlRules = new List<IRule>(new IRule[] { 
             new FullMoore(), 
@@ -38,9 +39,9 @@ namespace Multiscale_Modelling
         }
         public E_SimulationType SimulationType { get; set; }
         public int Probability { get; set; }
-
         public int RowCount => cellList.Count;
         public int ColumnCount => cellList.ElementAtOrDefault(0)?.Count ?? 0;
+        public bool IsSimulationFinished => GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is null;
 
         public Board()
         {
@@ -49,7 +50,7 @@ namespace Multiscale_Modelling
         }
         public override string ToString() // used for exporting to a .txt file
         {
-            int uniquePhases = cellList.SelectMany(x => x).Select(x => x.Phase).Distinct().Count();
+            int uniquePhases = cellList.SelectMany(x => x).Select(x => x.Phase).Distinct().Count(); // TODO: use GetAllCells()
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append($"{ColumnCount} {RowCount} {uniquePhases}\n");
             foreach (List<Cell> row in cellList)
@@ -148,9 +149,12 @@ namespace Multiscale_Modelling
                 Cell cell = GetCell(row: y, column: x);
                 if (cell.Id == 0)
                 {
-                    cell.SetId(i);
+                    //cell.SetId(i);
+                    cell.NewId = Cell.UniqueSeeds;
                     cell.SetColor(Color.FromArgb(RandomDevice.Next(1, 255), RandomDevice.Next(1, 255), RandomDevice.Next(1, 255)));
+                    cell.UpdateId();
                     i++;
+                    Cell.UniqueSeeds++;
                     attempts = 0;
                 }
                 attempts++;
@@ -355,7 +359,7 @@ namespace Multiscale_Modelling
                 }
             }
         }
-        public void InitializeCalculations()
+        public void InitializeCalculations() // TODO: less effective in 2nd phase (adding cells on border too fast)
         {
             newCells.Clear();
             for (int i = 0; i < cellList.Count; i++)
@@ -374,21 +378,28 @@ namespace Multiscale_Modelling
                 newCells.TryAdd(n.CellId, n);
         }
 
-        public LinkedList<Cell> CalculateNextGeneration()
+        public LinkedList<Cell> CalculateNextGeneration(bool secondPhase = false)
         {
             ConcurrentQueue<Cell> newColored = new ConcurrentQueue<Cell>();
             Parallel.ForEach(newCells.Keys, i =>
+            //foreach(int i in newCells.Keys)
             {
                 Cell cell = newCells[i];
                 Cell mostDominantCell = null;
+                Cell[] neighbors = null;
+
+                if (!secondPhase)
+                    neighbors = cell.Neighbors;
+                else
+                    neighbors = cell.GetNeighborsByPreviousId(cell.PreviousId);
 
                 if (SimulationType == E_SimulationType.Simple)
-                    mostDominantCell = GetMostDominantCell(cell.Neighbors);
+                    mostDominantCell = GetMostDominantCell(neighbors);
                 else
                 {
                     foreach (IRule rule in ShapeControlRules)
                     {
-                        mostDominantCell = rule.GetDominantCell(cell.Neighbors, Probability);
+                        mostDominantCell = rule.GetDominantCell(neighbors, Probability);
 
                         if (mostDominantCell is Cell)
                             break;
@@ -410,7 +421,10 @@ namespace Multiscale_Modelling
                 if (newColored.TryDequeue(out Cell c))
                 {
                     c.UpdateId();
-                    TryAddNewCells(c.Neighbors);
+                    if (!secondPhase)
+                        TryAddNewCells(c.Neighbors);
+                    else
+                        TryAddNewCells(c.GetNeighborsByPreviousId(c.PreviousId));
 
                     newCells.TryRemove(c.CellId, out Cell value);
                     listToReturn.AddLast(c);
@@ -581,6 +595,43 @@ namespace Multiscale_Modelling
 
             // TODO: add metadata
             return bitmap;
+        }
+
+        public IEnumerable<Cell> ShiftPhase(Cell selectedCell)
+        {
+            if (selectedCell.Id <= 0)
+                return null;
+
+            IEnumerable<Cell> cellsToShift = GetAllCells().Where(c => c.Id == selectedCell.Id);
+
+            Parallel.ForEach(cellsToShift, cell =>
+            {
+                cell.Phase = 1 - cell.Phase; // 0 - 1 toggle
+            });
+
+            return cellsToShift;
+        }
+
+        public IEnumerable<IGrouping<int, Cell>> GetPhaseOneGroups()
+        {
+            return GetAllCells().Where(c => c.Phase == 0 && c.Id > 0).GroupBy(c => c.Id);
+        }
+
+        public void ClearGroup(IGrouping<int, Cell> group)
+        {
+
+            Parallel.ForEach(group, cell =>
+            {
+                cell.SetId(0);
+                cell.SetColor(selectionColor);
+            });
+
+            //InitializeCalculations();
+
+            //foreach (Cell cell in group)
+            //{
+            //    cell.SetColor(Color.Red);
+            //}
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using static System.Convert;
 
@@ -14,6 +15,10 @@ namespace Multiscale_Modelling
         private float cellSize;
         private int bitmapSize;
         private Pen gridPen = new Pen(Color.Black);
+        private SolidBrush phaseBrush = new SolidBrush(Color.DeepPink);
+        private E_SelectionMode selectionMode = E_SelectionMode.Phase;
+
+        public Cell SelectedCell = null;
 
         public Board Board = new Board();
 		//public Action<string, Logs.LogLevel> Log { get; set; } // TESTING
@@ -147,6 +152,8 @@ namespace Multiscale_Modelling
 
         public void DrawCells(IEnumerable<Cell> cellsToDraw = null)
         {
+            SolidBrush brush = null;
+
             if (cellsToDraw == null)
             {
                 for (int i = 0; i < Board.RowCount; i++)
@@ -154,7 +161,11 @@ namespace Multiscale_Modelling
                     for (int j = 0; j < Board.ColumnCount; j++)
                     {
                         Cell cell = Board.GetCell(row: i, column: j);
-                        SolidBrush brush = Cell.UniqueColors[cell.Color.ToArgb()];
+
+                        if (cell.Phase == 1)
+                            brush = phaseBrush;
+                        else
+                            brush = Cell.UniqueColors[cell.Color.ToArgb()];
                         graphics.FillRectangle(brush, cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
                     }
                 }
@@ -163,7 +174,10 @@ namespace Multiscale_Modelling
             {
                 foreach (Cell cell in cellsToDraw)
                 {
-                    SolidBrush brush = Cell.UniqueColors[cell.Color.ToArgb()];
+                    if (cell.Phase == 1)
+                        brush = phaseBrush;
+                    else
+                        brush = Cell.UniqueColors[cell.Color.ToArgb()];
                     graphics.FillRectangle(brush, cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
                 }
             }
@@ -228,5 +242,39 @@ namespace Multiscale_Modelling
             }
         }
 
+        private void pictureBoxBoard_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (!Board.IsSimulationFinished)
+               return;
+
+            int indexX = ToInt32(Math.Floor(e.X / cellSize)); // this is safe because cellSize is calculated at the very start when an empty board is drawn
+            int indexY = ToInt32(Math.Floor(e.Y / cellSize));
+
+            SelectedCell = Board.GetCell(indexY, indexX);
+
+            if (e.Button == MouseButtons.Left) // phase selection
+            {
+                Logs.Log("Seed " + SelectedCell.Id.ToString() + " selected (" + SelectedCell.Position.X + ", " + SelectedCell.Position.Y + ")", Logs.LogLevel.Info);
+                IEnumerable<Cell> shiftedCells = Board.ShiftPhase(SelectedCell);
+                Draw(shiftedCells); // add cells to draw
+            }
+            else if (e.Button == MouseButtons.Right) // border drawing
+            {
+                Logs.Log("Right button clicked!", Logs.LogLevel.Info);
+
+                //Board.Run2ndPhase();
+                //Draw();
+            }
+            else if (e.Button == MouseButtons.Middle) // mode selection
+            {
+                // switch mode
+                //Logs.Log("Middle button clicked!", Logs.LogLevel.Info);
+                // option ++
+                // option = option % 
+                // var namesCount = Enum.GetNames(typeof(MyEnum)).Length;
+                var test = SelectedCell.GetNeighborsByPreviousId(SelectedCell.PreviousId);
+                int a = 0;
+            }
+        }
     }
 }

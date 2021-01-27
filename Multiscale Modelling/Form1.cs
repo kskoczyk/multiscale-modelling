@@ -63,6 +63,7 @@ namespace Multiscale_Modelling
         private void buttonRun_Click(object sender, EventArgs e)
         {
             ToggleSimulationControls(false);
+            bool isSimulationFinished = boardControl1.Board.IsSimulationFinished;
 
             Task.Run(() =>
             {
@@ -71,7 +72,40 @@ namespace Multiscale_Modelling
                 {
                     bool isAnimated = checkBoxAnimate.Checked;
                     boardControl1.Board.Probability = ToInt32(numericUpDownProbability.Value);
-                    if (boardControl1.Board.GetAllCells().Where(c => c.Id != 0 && c.Id != -1).FirstOrDefault() is Cell) // get only mutable cells
+                    if(isSimulationFinished)
+                    {
+                        IEnumerable<IGrouping<int, Cell>> groupsToDraw = boardControl1.Board.GetPhaseOneGroups();
+
+                        foreach(IGrouping<int, Cell> group in groupsToDraw)
+                        {
+                            boardControl1.Board.ClearGroup(group);
+                            boardControl1.Board.RollRandomCells(ToInt32(numericUpDownNucleiNumber.Value));
+                            boardControl1.Draw();
+
+                            boardControl1.Board.InitializeCalculations();
+                            while (boardControl1.Board.GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is Cell) // null = no more cells to draw
+                            {
+                                LinkedList<Cell> cellsToDraw = boardControl1.Board.CalculateNextGeneration(secondPhase: true);
+
+                                if (cellsToDraw.Any())
+                                {
+                                    if (checkBoxAnimate.Checked && checkBoxAnimate.Checked == isAnimated)
+                                    {
+                                        boardControl1.Draw(cellsToDraw);
+                                    }
+                                    else if (checkBoxAnimate.Checked) // check whether board should be animated continously
+                                    {
+                                        boardControl1.Draw();
+                                        isAnimated = checkBoxAnimate.Checked;
+                                    }
+                                    else
+                                        isAnimated = checkBoxAnimate.Checked;
+                                }
+                            }
+                        }
+                        boardControl1.Draw();
+                    }
+                    else if (boardControl1.Board.GetAllCells().Where(c => c.Id != 0 && c.Id != -1).FirstOrDefault() is Cell) // if there are cells to grow
                     {
                         boardControl1.Board.InitializeCalculations();
                         while (boardControl1.Board.GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is Cell) // null = no more cells to draw

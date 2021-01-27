@@ -10,17 +10,20 @@ namespace Multiscale_Modelling
     public class Cell
     {
         private static long CellCounter = 0;
+        public static int UniqueSeeds = 1; // start seeding from 1
         public long CellId { get; private set; }
         public int Type { get; set; }
         public Point Position { get; private set; } = new Point(0, 0);
         public Board Board { get; private set; }
-        public int Phase { get; set; } // TODO: currently not used
+        public int Phase { get; set; }
 
         public static Dictionary<int, SolidBrush> UniqueColors = new Dictionary<int, SolidBrush>()
         {
-            // reserve for empty cells and inclusions
+            // reserve for special uses
             { Color.White.ToArgb(), new SolidBrush(Color.White) },
-            { Color.Black.ToArgb(), new SolidBrush(Color.Black) }
+            { Color.Black.ToArgb(), new SolidBrush(Color.Black) },
+            { Color.DeepPink.ToArgb(), new SolidBrush(Color.DeepPink) },
+            { Color.Aqua.ToArgb(), new SolidBrush(Color.Aqua) } // TODO: they might be used in BoardControl instead
         };
 
         public Cell(Point position, Board board, int phase = 0)
@@ -34,14 +37,16 @@ namespace Multiscale_Modelling
             Color = Color.White;
         }
 
-        public int Id { get; private set; } // type
+        public int Id { get; private set; } // seed type
         public int NewId { get; set; }
+        public int PreviousId { get; set; }
         public Color Color { get; private set; }
         public Color NewColor { get; set; }
         public Cell[] Neighbors { get; set; } = new Cell[] { null, null, null, null, null, null, null, null }; // max 8 neighbors
 
         public void SetId(int id)
         {
+            PreviousId = Id;
             Id = id;
             NewId = id;
         }
@@ -59,5 +64,17 @@ namespace Multiscale_Modelling
             Color = NewColor;
         }
 
+        public Cell[] GetNeighborsByPreviousId(int id) // used for setting borders in 2nd phase
+        {
+            Cell[] neighborsById = new Cell[] { null, null, null, null, null, null, null, null };
+
+            for (int i = 0; i < Neighbors.Count(); i++)
+            {
+                if (Neighbors[i]?.PreviousId == id)
+                    neighborsById[i] = Neighbors[i];
+            }
+
+            return neighborsById;
+        }
     }
 }
