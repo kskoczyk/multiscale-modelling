@@ -59,7 +59,6 @@
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.labelLog = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.boardControl1 = new Multiscale_Modelling.BoardControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label2ndPhase = new System.Windows.Forms.Label();
             this.groupBoxView = new System.Windows.Forms.GroupBox();
@@ -87,6 +86,7 @@
             this.numericUpDownInclusionsRadius = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownInclusionsNumber = new System.Windows.Forms.NumericUpDown();
             this.checkBoxAnimate = new System.Windows.Forms.CheckBox();
+            this.boardControl1 = new Multiscale_Modelling.BoardControl();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
             this.groupBoxBoard.SuspendLayout();
@@ -124,7 +124,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(732, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(732, 30);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -133,7 +133,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.microstructureToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // microstructureToolStripMenuItem
@@ -383,9 +383,19 @@
             0,
             0,
             0});
+            this.numericUpDownNucleiNumber.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numericUpDownNucleiNumber.Name = "numericUpDownNucleiNumber";
             this.numericUpDownNucleiNumber.Size = new System.Drawing.Size(120, 22);
             this.numericUpDownNucleiNumber.TabIndex = 9;
+            this.numericUpDownNucleiNumber.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // richTextBoxLog
             // 
@@ -414,23 +424,12 @@
             this.tableLayoutPanel1.Controls.Add(this.boardControl1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 28);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 30);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 875);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 873);
             this.tableLayoutPanel1.TabIndex = 14;
-            // 
-            // boardControl1
-            // 
-            this.boardControl1.CellNumberHeight = 0;
-            this.boardControl1.CellNumberWidth = 0;
-            this.boardControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.boardControl1.IsGridEnabled = false;
-            this.boardControl1.Location = new System.Drawing.Point(3, 3);
-            this.boardControl1.Name = "boardControl1";
-            this.boardControl1.Size = new System.Drawing.Size(337, 869);
-            this.boardControl1.TabIndex = 13;
             // 
             // panel1
             // 
@@ -696,6 +695,7 @@
             this.comboBoxInclusionType.Name = "comboBoxInclusionType";
             this.comboBoxInclusionType.Size = new System.Drawing.Size(120, 24);
             this.comboBoxInclusionType.TabIndex = 15;
+            this.comboBoxInclusionType.SelectedIndexChanged += new System.EventHandler(this.comboBoxInclusionType_SelectedIndexChanged);
             // 
             // buttonAddInclusions
             // 
@@ -773,6 +773,17 @@
             this.checkBoxAnimate.TabIndex = 11;
             this.checkBoxAnimate.Text = "Animate";
             this.checkBoxAnimate.UseVisualStyleBackColor = true;
+            // 
+            // boardControl1
+            // 
+            this.boardControl1.CellNumberHeight = 0;
+            this.boardControl1.CellNumberWidth = 0;
+            this.boardControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.boardControl1.IsGridEnabled = false;
+            this.boardControl1.Location = new System.Drawing.Point(3, 3);
+            this.boardControl1.Name = "boardControl1";
+            this.boardControl1.Size = new System.Drawing.Size(337, 867);
+            this.boardControl1.TabIndex = 13;
             // 
             // Form1
             // 

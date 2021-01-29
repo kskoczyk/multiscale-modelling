@@ -34,11 +34,15 @@ namespace Multiscale_Modelling
             IEnumerable<object> b = a.OfType<object>();
             IEnumerable<string> c = b.Select(x => x.ToString());
              */
-            comboBoxBoundaryCondition.Items.AddRange(EnumToString.BoundaryCondition.Values.ToArray());
-            comboBoxBoundaryCondition.SelectedItem = EnumToString.BoundaryCondition[Bc.Absorbing];
 
             comboBoxSimulationType.Items.AddRange(EnumToString.SimulationType.Values.ToArray());
             comboBoxSimulationType.SelectedItem = EnumToString.SimulationType[E_SimulationType.Simple];
+
+            comboBoxBoundaryCondition.Items.AddRange(EnumToString.BoundaryCondition.Values.ToArray());
+            comboBoxBoundaryCondition.SelectedItem = EnumToString.BoundaryCondition[Bc.Absorbing];
+
+            comboBoxInclusionType.Items.AddRange(EnumToString.InclusionType.Values.ToArray());
+            comboBoxInclusionType.SelectedItem = EnumToString.InclusionType[E_InclusionType.Circle];
 
             Logs.Log("Program start", Logs.LogLevel.Other);
         }
@@ -300,7 +304,7 @@ namespace Multiscale_Modelling
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                boardControl1.Board.ToBitmap(CELL_BITMAP_SIZE).Save(saveFileDialog.FileName, ImageFormat.Bmp); // TODO: remove imageformat
+                boardControl1.Board.ToBitmap(CELL_BITMAP_SIZE).Save(saveFileDialog.FileName);
             else
                 Logs.Log("EXPORT: Unable to show export dialog", Logs.LogLevel.Error);
         }
@@ -344,6 +348,7 @@ namespace Multiscale_Modelling
                 }
             }
 
+            ToggleControlsForSecondPhase(true);
         }
 
         private void fromTextFiletxtToolStripMenuItemImportTxt_Click(object sender, EventArgs e)
@@ -390,6 +395,7 @@ namespace Multiscale_Modelling
                 }
             }
 
+            ToggleControlsForSecondPhase(true);
         }
 
         private void comboBoxSimulationType_SelectedIndexChanged(object sender, EventArgs e)
@@ -456,6 +462,18 @@ namespace Multiscale_Modelling
         {
             boardControl1.Board.ClearBorders();
             boardControl1.Draw();
+        }
+
+        private void comboBoxInclusionType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxInclusionType.SelectedItem.ToString() == EnumToString.InclusionType[E_InclusionType.Circle])
+            {
+                boardControl1.Board.InclusionType = E_InclusionType.Circle;
+            }
+            else if (comboBoxInclusionType.SelectedItem.ToString() == EnumToString.InclusionType[E_InclusionType.Square])
+            {
+                boardControl1.Board.InclusionType = E_InclusionType.Square;
+            }
         }
     }
 }

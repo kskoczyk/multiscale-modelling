@@ -38,6 +38,7 @@ namespace Multiscale_Modelling
             }
         }
         public E_SimulationType SimulationType { get; set; }
+        public E_InclusionType InclusionType { get; set; }
         public int Probability { get; set; }
         public bool IsAnyGrainSelected = false;
         public int RowCount => cellList.Count;
@@ -592,7 +593,13 @@ namespace Multiscale_Modelling
             {
                 Parallel.ForEach(xIndices, j =>
                 {
-                    if (IsInRadius(center.Position.X, center.Position.Y, cellList[i][j].Position.X, cellList[i][j].Position.Y, radius))
+                    if (InclusionType == E_InclusionType.Circle && IsInRadius(center.Position.X, center.Position.Y, cellList[i][j].Position.X, cellList[i][j].Position.Y, radius))
+                    {
+                        cellList[i][j].Clear();
+                        cellList[i][j].SetColor(Color.Black);
+                        cellList[i][j].SetId(-1);
+                    }
+                    else if (InclusionType == E_InclusionType.Square)
                     {
                         cellList[i][j].Clear();
                         cellList[i][j].SetColor(Color.Black);
@@ -626,12 +633,23 @@ namespace Multiscale_Modelling
         {
             Bitmap bitmap = new Bitmap(ColumnCount * cellBmpSize, RowCount * cellBmpSize);
             Graphics graphics = Graphics.FromImage(bitmap);
+            SolidBrush brush = null;
 
             for (int i = 0; i < cellList.Count; i++)
+            {
                 for (int j = 0; j < cellList[i].Count; j++)
-                    graphics.FillRectangle(new SolidBrush(cellList[i][j].Color), j * cellBmpSize, i * cellBmpSize, cellBmpSize, cellBmpSize);
+                {
+                    Cell cell = cellList[i][j];
 
-            // TODO: add metadata
+                    if (cell.Phase > 0)
+                        brush = new SolidBrush(Color.FromArgb(255 - cell.Phase, cell.Color.R, cell.Color.G, cell.Color.B)); // retain phase information in alpha channel
+                    else
+                        brush = new SolidBrush(cell.Color);
+
+                    graphics.FillRectangle(brush, j * cellBmpSize, i * cellBmpSize, cellBmpSize, cellBmpSize);
+                }
+            }
+
             return bitmap;
         }
 
