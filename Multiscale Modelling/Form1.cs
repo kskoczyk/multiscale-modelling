@@ -60,9 +60,41 @@ namespace Multiscale_Modelling
             numericUpDownY.Enabled = toggle;
         }
 
+        private void ToggleControlsForSimulation(bool toggle)
+        {
+            groupBoxBoard.Enabled = toggle;
+            groupBoxSimulation.Enabled = toggle;
+            groupBoxSettings.Enabled = toggle;
+            groupBoxInclusions.Enabled = toggle;
+            groupBoxView.Enabled = toggle;
+            buttonRun.Enabled = toggle;
+        }
+
+        private void ToggleControlsForSecondPhase(bool toggle)
+        {
+            buttonRandom.Enabled = !toggle;
+            comboBoxBoundaryCondition.Enabled = !toggle;
+            groupBoxView.Enabled = toggle;
+            label2ndPhase.Visible = toggle;
+
+            if (toggle)
+            {
+                numericUpDownNucleiNumber.BackColor = Color.Yellow;
+                buttonRun.BackColor = Color.Yellow;
+                buttonRun.Text = "2nd phase";
+            }
+            else
+            {
+                numericUpDownNucleiNumber.BackColor = SystemColors.Window;
+                buttonRun.BackColor = SystemColors.ControlLight;
+                buttonRun.Text = "Run";
+            }
+        }
+
         private void buttonRun_Click(object sender, EventArgs e)
         {
-            ToggleSimulationControls(false);
+            //ToggleSimulationControls(false);
+            ToggleControlsForSimulation(false);
             bool isSimulationFinished = boardControl1.Board.IsSimulationFinished;
 
             Task.Run(() =>
@@ -72,11 +104,19 @@ namespace Multiscale_Modelling
                 {
                     bool isAnimated = checkBoxAnimate.Checked;
                     boardControl1.Board.Probability = ToInt32(numericUpDownProbability.Value);
-                    if(isSimulationFinished)
+                    if(isSimulationFinished) // 2nd phase
                     {
-                        IEnumerable<IGrouping<int, Cell>> groupsToDraw = boardControl1.Board.GetPhaseOneGroups().ToList();
+                        IEnumerable<IGrouping<int, Cell>> groupsToDraw;
 
-                        foreach(IGrouping<int, Cell> group in groupsToDraw)
+                        if (boardControl1.Board.IsAnyGrainSelected)
+                        {
+                            groupsToDraw = boardControl1.Board.GetPhaseOneSelectedGroup().ToList();
+                            boardControl1.Board.DeselectAll();
+                        }
+                        else
+                            groupsToDraw = boardControl1.Board.GetPhaseOneGroups().ToList();
+
+                        foreach (IGrouping<int, Cell> group in groupsToDraw)
                         {
                             boardControl1.Board.ClearGroup(group);
                             (Point minRange, Point maxRange) = boardControl1.Board.GetGroupRange(group);
@@ -137,7 +177,10 @@ namespace Multiscale_Modelling
                 {
                     buttonRun.Invoke(new Action(() =>
                     {
-                        ToggleSimulationControls(true);
+                        //ToggleSimulationControls(true);
+                        ToggleControlsForSimulation(true);
+                        if (boardControl1.Board.IsSimulationFinished)
+                            ToggleControlsForSecondPhase(true);
                     }));
                     Logs.Log("Finished calculations", Logs.LogLevel.Info);
                 }
@@ -168,7 +211,8 @@ namespace Multiscale_Modelling
 
         private void buttonRandom_Click(object sender, EventArgs e)
         {
-            ToggleSimulationControls(false);
+            //ToggleSimulationControls(false);
+            ToggleControlsForSimulation(false);
 
             Task.Run(() =>
             {
@@ -185,7 +229,8 @@ namespace Multiscale_Modelling
                 {
                     buttonRandom.Invoke(new Action(() =>
                     {
-                        ToggleSimulationControls(true);
+                        //ToggleSimulationControls(true);
+                        ToggleControlsForSimulation(true);
                     }));
                 }
             });
@@ -210,7 +255,8 @@ namespace Multiscale_Modelling
 
         private void buttonClear_Click(object sender, EventArgs e)
         {
-            ToggleSimulationControls(false);
+            //ToggleSimulationControls(false);
+            ToggleControlsForSimulation(false);
 
             Task.Run(() =>
             {
@@ -223,7 +269,9 @@ namespace Multiscale_Modelling
                 {
                     buttonClear.Invoke(new Action(() =>
                     {
-                        ToggleSimulationControls(true);
+                        //ToggleSimulationControls(true);
+                        ToggleControlsForSimulation(true);
+                        ToggleControlsForSecondPhase(false);
                     }));
                 }
             });
@@ -379,6 +427,16 @@ namespace Multiscale_Modelling
         private void numericUpDownProbability_Leave(object sender, EventArgs e)
         {
             boardControl1.Board.Probability = ToInt32(numericUpDownProbability.Value);
+        }
+
+        private void numericUpDownThickness_Leave(object sender, EventArgs e)
+        {
+            boardControl1.BorderThickness = ToInt32(numericUpDownThickness.Value);
+        }
+
+        private void numericUpDownThickness_ValueChanged(object sender, EventArgs e)
+        {
+            boardControl1.BorderThickness = ToInt32(numericUpDownThickness.Value);
         }
     }
 }

@@ -39,6 +39,7 @@ namespace Multiscale_Modelling
         }
         public E_SimulationType SimulationType { get; set; }
         public int Probability { get; set; }
+        public bool IsAnyGrainSelected = false;
         public int RowCount => cellList.Count;
         public int ColumnCount => cellList.ElementAtOrDefault(0)?.Count ?? 0;
         public bool IsSimulationFinished => GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is null;
@@ -113,8 +114,11 @@ namespace Multiscale_Modelling
             {
                 for (int j = 0; j < cellList[i].Count; j++)
                 {
-                    cellList[i][j].SetId(0);
-                    cellList[i][j].SetColor(Color.White);
+                    //cellList[i][j].SetId(0);
+                    //cellList[i][j].IsSelected = false;
+                    //cellList[i][j].Phase = 0;
+                    //cellList[i][j].SetColor(Color.White);
+                    cellList[i][j].Clear();
                 }
             }
         }
@@ -650,6 +654,11 @@ namespace Multiscale_Modelling
             return GetAllCells().Where(c => c.Phase == 0 && c.Id > 0).GroupBy(c => c.Id);
         }
 
+        public IEnumerable<IGrouping<int, Cell>> GetPhaseOneSelectedGroup() // TODO: multiple selected groups?
+        {
+            return GetAllCells().Where(c => c.Phase == 0 && c.IsSelected == true).GroupBy(c => c.Id);
+        }
+
         public void ClearGroup(IGrouping<int, Cell> group)
         {
 
@@ -658,18 +667,10 @@ namespace Multiscale_Modelling
                 cell.SetId(0);
                 cell.SetColor(selectionColor);
             });
-
-            //InitializeCalculations();
-
-            //foreach (Cell cell in group)
-            //{
-            //    cell.SetColor(Color.Red);
-            //}
         }
 
         public (Point minRange, Point maxRange) GetGroupRange(IGrouping<int, Cell> group)
         {
-            //People.Min(p => p.DateOfBirth.GetValueOrDefault(DateTime.MaxValue));
             int minX = group.Min(c => c.Position.X);
             int maxX = group.Max(c => c.Position.X);
             int minY = group.Min(c => c.Position.Y);
@@ -677,5 +678,118 @@ namespace Multiscale_Modelling
 
             return (new Point(minX, minY), new Point(maxX, maxY));
         }
+
+        public IEnumerable<Cell> Select(int id)
+        {
+            DeselectAll();
+
+            if (id <= 0)
+                return null;
+
+            IEnumerable<Cell> cellsToSelect = GetAllCells().Where(c => c.Id == id);
+
+            foreach (Cell cell in cellsToSelect)
+            {
+                cell.IsSelected = true;
+            }
+
+            IsAnyGrainSelected = true;
+
+            return cellsToSelect;
+        }
+
+        public IEnumerable<Cell> DeselectAll()
+        {
+            IEnumerable<Cell> cellsToDeselect = GetAllCells().Where(c => c.IsSelected == true);
+
+            foreach (Cell cell in cellsToDeselect)
+            {
+                cell.IsSelected = false;
+            }
+
+            IsAnyGrainSelected = false;
+
+            return cellsToDeselect;
+        }
+
+        public void SetBorderCells(int thickness, int? cellId = null)
+        {
+            if (thickness < 1)
+            {
+                Logs.Log("Thickness cannot be less than 1", Logs.LogLevel.Error);
+                return;
+            }
+
+            // TODO: clear all when null
+
+            Action<int, int, Cell> actionMoreThan = new Action<int, int, Cell>((direction, size, cell) =>
+            {
+                if (size == 0)
+                    return;
+
+                Cell c = cell.Neighbors[direction];
+                if (c is Cell && ((cellId == null && cell.Id > c.Id)
+                    || (cellId is int && cell.Id > c.Id && (c.Id == cellId || cell.Id == cellId))))
+                {
+
+                    if (!cell.IsOnBorder)
+                        cell.IsOnBorder = true;
+
+                    int i = 0;
+                    while (i < size && c.Neighbors[(direction + 4) % 8] is Cell ce)
+                    {
+                        c = ce;
+                        i++;
+                        if (!c.IsOnBorder)
+                            c.IsOnBorder = true;
+                    }
+                }
+            });
+
+            Action<int, int, Cell> actionLessThan = new Action<int, int, Cell>((direction, size, cell) =>
+            {
+                if (size == 0)
+                    return;
+
+                Cell c = cell.Neighbors[direction];
+                if (c is Cell && ((cellId == null && cell.Id < c.Id)
+                    || (cellId is int && cell.Id < c.Id && (c.Id == cellId || cell.Id == cellId))))
+                {
+
+                    if (!cell.IsOnBorder)
+                        cell.IsOnBorder = true;
+
+                    int i = 0;
+                    while (i < size && c.Neighbors[(direction + 4) % 8] is Cell ce)
+                    {
+                        c = ce;
+                        i++;
+                        if (!c.IsOnBorder)
+                            c.IsOnBorder = true;
+                    }
+                }
+            });
+
+            var actions = new Action<int, int, Cell>[] { actionMoreThan, actionLessThan };
+
+            int floor = ToInt32(Math.Floor((1.0 * thickness) / 2));
+            int celing = ToInt32(Math.Ceiling((1.0 * thickness) / 2));
+
+            for (int i = 0; i < thickness; i++)
+            {
+                foreach (Cell cell in cellList.SelectMany(x => x))
+                {
+                    int x = i % 2 == 0 ? celing : floor;
+
+                    actions[i % 2].Invoke(1, x, cell);
+                    actions[i % 2].Invoke(3, x, cell);
+                    actions[i % 2].Invoke(5, x, cell);
+                    actions[i % 2].Invoke(7, x, cell);
+                }
+            }
+
+            return;
+        }
+
     }
 }

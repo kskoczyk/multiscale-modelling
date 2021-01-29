@@ -16,8 +16,10 @@ namespace Multiscale_Modelling
         private int bitmapSize;
         private Pen gridPen = new Pen(Color.Black);
         private SolidBrush phaseBrush = new SolidBrush(Color.DeepPink);
+        private SolidBrush selectionBrush = new SolidBrush(Color.Yellow);
+        private SolidBrush borderBrush = new SolidBrush(Color.Aqua);
+        public int BorderThickness = 1; // TODO
         private object _lock = new object();
-        private E_SelectionMode selectionMode = E_SelectionMode.Phase;
 
         public Cell SelectedCell = null;
 
@@ -117,23 +119,26 @@ namespace Multiscale_Modelling
 
             CalculateCellSize();
 
-            if (pictureBoxBoard.Image == null)
-                ResizeBitmap();
-
-            if (cellsToDraw?.Count() > 0)
+            lock (_lock) // lock to make window resizing thread-safe
             {
-                // print selected
-                DrawCells(cellsToDraw);
-            }
-            else
-            {
-                // print all
-                graphics.Clear(Color.White);
-                DrawCells();
-            }
+                if (pictureBoxBoard.Image == null)
+                    ResizeBitmap();
 
-            if (IsGridEnabled)
-                DrawGrid();
+                if (cellsToDraw?.Count() > 0)
+                {
+                    // print selected
+                    DrawCells(cellsToDraw);
+                }
+                else
+                {
+                    // print all
+                    graphics.Clear(Color.White);
+                    DrawCells();
+                }
+
+                if (IsGridEnabled)
+                    DrawGrid();
+            }
 
             pictureBoxBoard.Invoke(new Action(() => pictureBoxBoard.Image = bitmap)); // invoke - draw pictureBox in the main thread
         }
@@ -163,7 +168,11 @@ namespace Multiscale_Modelling
                     {
                         Cell cell = Board.GetCell(row: i, column: j);
 
-                        if (cell.Phase == 1)
+                        if (cell.IsOnBorder)
+                            brush = borderBrush;
+                        else if (cell.IsSelected)
+                            brush = selectionBrush;
+                        else if (cell.Phase == 1)
                             brush = phaseBrush;
                         else
                             brush = Cell.UniqueColors[cell.Color.ToArgb()];
@@ -175,7 +184,11 @@ namespace Multiscale_Modelling
             {
                 foreach (Cell cell in cellsToDraw)
                 {
-                    if (cell.Phase == 1)
+                    if (cell.IsOnBorder)
+                        brush = borderBrush;
+                    else if (cell.IsSelected == true)
+                        brush = selectionBrush;
+                    else if (cell.Phase == 1)
                         brush = phaseBrush;
                     else
                         brush = Cell.UniqueColors[cell.Color.ToArgb()];
@@ -248,23 +261,25 @@ namespace Multiscale_Modelling
             if (!Board.IsSimulationFinished)
                return;
 
-            int indexX = ToInt32(Math.Floor(e.X / cellSize)); // this is safe because cellSize is calculated at the very start when an empty board is drawn
+            int indexX = ToInt32(Math.Floor(e.X / cellSize)); // this is safe because cellSize is calculated at the very start when 1-cell board is drawn
             int indexY = ToInt32(Math.Floor(e.Y / cellSize));
+
+            if (indexX > Board.ColumnCount - 1 || indexY > Board.RowCount - 1)
+                return;
 
             SelectedCell = Board.GetCell(indexY, indexX);
 
             if (e.Button == MouseButtons.Left) // phase selection
             {
-                Logs.Log("Seed " + SelectedCell.Id.ToString() + " selected (" + SelectedCell.Position.X + ", " + SelectedCell.Position.Y + ")", Logs.LogLevel.Info);
+                Logs.Log($"Seed {SelectedCell.Id} selected ({SelectedCell.Position.X}, {SelectedCell.Position.Y})", Logs.LogLevel.Info);
                 IEnumerable<Cell> shiftedCells = Board.ShiftPhase(SelectedCell);
                 Draw(shiftedCells); // add cells to draw
             }
             else if (e.Button == MouseButtons.Right) // border drawing
             {
-                Logs.Log("Right button clicked!", Logs.LogLevel.Info);
-
-                //Board.Run2ndPhase();
-                //Draw();
+                Logs.Log($"Seed {SelectedCell.Id} selected ({SelectedCell.Position.X}, {SelectedCell.Position.Y})", Logs.LogLevel.Info);
+                Board.SetBorderCells(BorderThickness, SelectedCell.Id);
+                Draw();
             }
             else if (e.Button == MouseButtons.Middle) // mode selection
             {
@@ -274,7 +289,19 @@ namespace Multiscale_Modelling
                 // option = option % 
                 // var namesCount = Enum.GetNames(typeof(MyEnum)).Length;
                 //var test = SelectedCell.GetNeighborsByPreviousId(SelectedCell.PreviousId);
-                int a = 0;
+                Logs.Log($"Seed {SelectedCell.Id} selected ({SelectedCell.Position.X}, {SelectedCell.Position.Y})", Logs.LogLevel.Info);
+
+                if (SelectedCell.IsSelected)
+                {
+                    IEnumerable<Cell> deselectedCells = Board.DeselectAll();
+                    Draw(deselectedCells);
+                }
+                else
+                {
+                    //IEnumerable<Cell> selectedCells = Board.Select(SelectedCell.Id);
+                    Board.Select(SelectedCell.Id);
+                    Draw(); // has to redraw the whole board due to possible deselecting of another group
+                }
             }
         }
     }

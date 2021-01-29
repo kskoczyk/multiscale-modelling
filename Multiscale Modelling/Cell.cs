@@ -17,6 +17,8 @@ namespace Multiscale_Modelling
         public Point Position { get; private set; } = new Point(0, 0);
         public Board Board { get; private set; }
         public int Phase { get; set; }
+        public bool IsSelected { get; set; } = false;
+        public bool IsOnBorder { get; set; } = false;
 
         public static ConcurrentDictionary<int, SolidBrush> UniqueColors = new ConcurrentDictionary<int, SolidBrush>(
             new Dictionary<int, SolidBrush>
@@ -24,8 +26,6 @@ namespace Multiscale_Modelling
                 // reserve for special uses
                 { Color.White.ToArgb(), new SolidBrush(Color.White) },
                 { Color.Black.ToArgb(), new SolidBrush(Color.Black) },
-                { Color.DeepPink.ToArgb(), new SolidBrush(Color.DeepPink) },
-                { Color.Aqua.ToArgb(), new SolidBrush(Color.Aqua) } // TODO: they might be used in BoardControl instead
             });
 
         public Cell(Point position, Board board, int phase = 0)
@@ -81,6 +81,14 @@ namespace Multiscale_Modelling
             }
 
             return neighborsById;
+        }
+        public void Clear()
+        {
+            SetColor(Color.White);
+            SetId(0);
+            IsSelected = false;
+            IsOnBorder = false;
+            Phase = 0;
         }
     }
 }

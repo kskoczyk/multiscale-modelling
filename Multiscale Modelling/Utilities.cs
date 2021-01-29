@@ -71,12 +71,6 @@ namespace Multiscale_Modelling
         ShapeControl
     }
 
-    public enum E_SelectionMode
-    {
-        Phase,
-        Border
-    }
-
     public static class EnumToString
     {
         public static Dictionary<Bc, string> BoundaryCondition = new Dictionary<Bc, string>()

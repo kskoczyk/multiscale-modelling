@@ -73,6 +73,19 @@
             this.numericUpDownInclusionsRadius = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownInclusionsNumber = new System.Windows.Forms.NumericUpDown();
             this.checkBoxAnimate = new System.Windows.Forms.CheckBox();
+            this.groupBoxView = new System.Windows.Forms.GroupBox();
+            this.label2ndPhase = new System.Windows.Forms.Label();
+            this.groupBoxPhase = new System.Windows.Forms.GroupBox();
+            this.groupBoxBorder = new System.Windows.Forms.GroupBox();
+            this.groupBoxSubstructure = new System.Windows.Forms.GroupBox();
+            this.checkBoxPhaseVisible = new System.Windows.Forms.CheckBox();
+            this.checkBoxBorderVisible = new System.Windows.Forms.CheckBox();
+            this.buttonDrawBorders = new System.Windows.Forms.Button();
+            this.buttonClearBorders = new System.Windows.Forms.Button();
+            this.labelThickness = new System.Windows.Forms.Label();
+            this.numericUpDownThickness = new System.Windows.Forms.NumericUpDown();
+            this.buttonClearPhases = new System.Windows.Forms.Button();
+            this.checkBoxSubstructureVisible = new System.Windows.Forms.CheckBox();
             this.boardControl1 = new Multiscale_Modelling.BoardControl();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
@@ -87,13 +100,18 @@
             this.groupBoxInclusions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsNumber)).BeginInit();
+            this.groupBoxView.SuspendLayout();
+            this.groupBoxPhase.SuspendLayout();
+            this.groupBoxBorder.SuspendLayout();
+            this.groupBoxSubstructure.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThickness)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonRun
             // 
-            this.buttonRun.Location = new System.Drawing.Point(277, 639);
+            this.buttonRun.Location = new System.Drawing.Point(264, 882);
             this.buttonRun.Name = "buttonRun";
-            this.buttonRun.Size = new System.Drawing.Size(100, 50);
+            this.buttonRun.Size = new System.Drawing.Size(109, 50);
             this.buttonRun.TabIndex = 0;
             this.buttonRun.Text = "Run";
             this.buttonRun.UseVisualStyleBackColor = true;
@@ -231,9 +249,9 @@
             this.checkBoxDisplayGrid.AutoSize = true;
             this.checkBoxDisplayGrid.Location = new System.Drawing.Point(6, 70);
             this.checkBoxDisplayGrid.Name = "checkBoxDisplayGrid";
-            this.checkBoxDisplayGrid.Size = new System.Drawing.Size(112, 21);
+            this.checkBoxDisplayGrid.Size = new System.Drawing.Size(104, 21);
             this.checkBoxDisplayGrid.TabIndex = 8;
-            this.checkBoxDisplayGrid.Text = "Display grid?";
+            this.checkBoxDisplayGrid.Text = "Display grid";
             this.checkBoxDisplayGrid.UseVisualStyleBackColor = true;
             this.checkBoxDisplayGrid.CheckedChanged += new System.EventHandler(this.checkBoxDisplayGrid_CheckedChanged);
             // 
@@ -246,7 +264,7 @@
             this.groupBoxBoard.Controls.Add(this.checkBoxDisplayGrid);
             this.groupBoxBoard.Controls.Add(this.labelYSize);
             this.groupBoxBoard.Controls.Add(this.numericUpDownY);
-            this.groupBoxBoard.Location = new System.Drawing.Point(14, 128);
+            this.groupBoxBoard.Location = new System.Drawing.Point(14, 3);
             this.groupBoxBoard.Name = "groupBoxBoard";
             this.groupBoxBoard.Size = new System.Drawing.Size(360, 99);
             this.groupBoxBoard.TabIndex = 9;
@@ -314,7 +332,7 @@
             this.groupBoxSettings.Controls.Add(this.numericUpDownNucleiNumber);
             this.groupBoxSettings.Location = new System.Drawing.Point(14, 233);
             this.groupBoxSettings.Name = "groupBoxSettings";
-            this.groupBoxSettings.Size = new System.Drawing.Size(360, 132);
+            this.groupBoxSettings.Size = new System.Drawing.Size(360, 122);
             this.groupBoxSettings.TabIndex = 10;
             this.groupBoxSettings.TabStop = false;
             this.groupBoxSettings.Text = "Settings";
@@ -371,10 +389,10 @@
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(24, 639);
+            this.richTextBoxLog.Location = new System.Drawing.Point(14, 855);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
-            this.richTextBoxLog.Size = new System.Drawing.Size(242, 50);
+            this.richTextBoxLog.Size = new System.Drawing.Size(244, 77);
             this.richTextBoxLog.TabIndex = 11;
             this.richTextBoxLog.Text = "";
             this.richTextBoxLog.TextChanged += new System.EventHandler(this.richTextBoxLog_TextChanged);
@@ -382,7 +400,7 @@
             // labelLog
             // 
             this.labelLog.AutoSize = true;
-            this.labelLog.Location = new System.Drawing.Point(21, 619);
+            this.labelLog.Location = new System.Drawing.Point(11, 835);
             this.labelLog.Name = "labelLog";
             this.labelLog.Size = new System.Drawing.Size(32, 17);
             this.labelLog.TabIndex = 12;
@@ -400,11 +418,13 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 704);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(732, 945);
             this.tableLayoutPanel1.TabIndex = 14;
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label2ndPhase);
+            this.panel1.Controls.Add(this.groupBoxView);
             this.panel1.Controls.Add(this.groupBoxSimulation);
             this.panel1.Controls.Add(this.groupBoxInclusions);
             this.panel1.Controls.Add(this.checkBoxAnimate);
@@ -415,7 +435,7 @@
             this.panel1.Controls.Add(this.groupBoxSettings);
             this.panel1.Location = new System.Drawing.Point(346, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(383, 698);
+            this.panel1.Size = new System.Drawing.Size(383, 939);
             this.panel1.TabIndex = 14;
             // 
             // groupBoxSimulation
@@ -424,7 +444,7 @@
             this.groupBoxSimulation.Controls.Add(this.numericUpDownProbability);
             this.groupBoxSimulation.Controls.Add(this.comboBoxSimulationType);
             this.groupBoxSimulation.Controls.Add(this.labelSimulationType);
-            this.groupBoxSimulation.Location = new System.Drawing.Point(14, 3);
+            this.groupBoxSimulation.Location = new System.Drawing.Point(14, 108);
             this.groupBoxSimulation.Name = "groupBoxSimulation";
             this.groupBoxSimulation.Size = new System.Drawing.Size(360, 119);
             this.groupBoxSimulation.TabIndex = 11;
@@ -478,9 +498,9 @@
             this.groupBoxInclusions.Controls.Add(this.labelInclusionsRadius);
             this.groupBoxInclusions.Controls.Add(this.numericUpDownInclusionsRadius);
             this.groupBoxInclusions.Controls.Add(this.numericUpDownInclusionsNumber);
-            this.groupBoxInclusions.Location = new System.Drawing.Point(14, 372);
+            this.groupBoxInclusions.Location = new System.Drawing.Point(14, 361);
             this.groupBoxInclusions.Name = "groupBoxInclusions";
-            this.groupBoxInclusions.Size = new System.Drawing.Size(360, 131);
+            this.groupBoxInclusions.Size = new System.Drawing.Size(360, 124);
             this.groupBoxInclusions.TabIndex = 13;
             this.groupBoxInclusions.TabStop = false;
             this.groupBoxInclusions.Text = "Inclusions";
@@ -573,12 +593,163 @@
             // checkBoxAnimate
             // 
             this.checkBoxAnimate.AutoSize = true;
-            this.checkBoxAnimate.Location = new System.Drawing.Point(277, 612);
+            this.checkBoxAnimate.Location = new System.Drawing.Point(273, 855);
             this.checkBoxAnimate.Name = "checkBoxAnimate";
             this.checkBoxAnimate.Size = new System.Drawing.Size(81, 21);
             this.checkBoxAnimate.TabIndex = 11;
             this.checkBoxAnimate.Text = "Animate";
             this.checkBoxAnimate.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxView
+            // 
+            this.groupBoxView.Controls.Add(this.groupBoxSubstructure);
+            this.groupBoxView.Controls.Add(this.groupBoxBorder);
+            this.groupBoxView.Controls.Add(this.groupBoxPhase);
+            this.groupBoxView.Enabled = false;
+            this.groupBoxView.Location = new System.Drawing.Point(14, 491);
+            this.groupBoxView.Name = "groupBoxView";
+            this.groupBoxView.Size = new System.Drawing.Size(360, 183);
+            this.groupBoxView.TabIndex = 17;
+            this.groupBoxView.TabStop = false;
+            this.groupBoxView.Text = "View";
+            // 
+            // label2ndPhase
+            // 
+            this.label2ndPhase.AutoSize = true;
+            this.label2ndPhase.Location = new System.Drawing.Point(11, 677);
+            this.label2ndPhase.MaximumSize = new System.Drawing.Size(365, 0);
+            this.label2ndPhase.Name = "label2ndPhase";
+            this.label2ndPhase.Size = new System.Drawing.Size(362, 68);
+            this.label2ndPhase.TabIndex = 18;
+            this.label2ndPhase.Text = "2nd phase unlocked! Use left mouse click for shifting between phases, right click" +
+    " for drawing grain boundaries, middle click for selection of individual grains t" +
+    "o go through 2nd phase simulation.\r\n";
+            this.label2ndPhase.Visible = false;
+            // 
+            // groupBoxPhase
+            // 
+            this.groupBoxPhase.Controls.Add(this.buttonClearPhases);
+            this.groupBoxPhase.Controls.Add(this.checkBoxPhaseVisible);
+            this.groupBoxPhase.Location = new System.Drawing.Point(6, 21);
+            this.groupBoxPhase.Name = "groupBoxPhase";
+            this.groupBoxPhase.Size = new System.Drawing.Size(112, 152);
+            this.groupBoxPhase.TabIndex = 0;
+            this.groupBoxPhase.TabStop = false;
+            this.groupBoxPhase.Text = "Phase";
+            // 
+            // groupBoxBorder
+            // 
+            this.groupBoxBorder.Controls.Add(this.labelThickness);
+            this.groupBoxBorder.Controls.Add(this.numericUpDownThickness);
+            this.groupBoxBorder.Controls.Add(this.buttonClearBorders);
+            this.groupBoxBorder.Controls.Add(this.buttonDrawBorders);
+            this.groupBoxBorder.Controls.Add(this.checkBoxBorderVisible);
+            this.groupBoxBorder.Location = new System.Drawing.Point(124, 21);
+            this.groupBoxBorder.Name = "groupBoxBorder";
+            this.groupBoxBorder.Size = new System.Drawing.Size(112, 152);
+            this.groupBoxBorder.TabIndex = 1;
+            this.groupBoxBorder.TabStop = false;
+            this.groupBoxBorder.Text = "Borders";
+            // 
+            // groupBoxSubstructure
+            // 
+            this.groupBoxSubstructure.Controls.Add(this.checkBoxSubstructureVisible);
+            this.groupBoxSubstructure.Location = new System.Drawing.Point(242, 21);
+            this.groupBoxSubstructure.Name = "groupBoxSubstructure";
+            this.groupBoxSubstructure.Size = new System.Drawing.Size(112, 152);
+            this.groupBoxSubstructure.TabIndex = 2;
+            this.groupBoxSubstructure.TabStop = false;
+            this.groupBoxSubstructure.Text = "Substructure";
+            // 
+            // checkBoxPhaseVisible
+            // 
+            this.checkBoxPhaseVisible.AutoSize = true;
+            this.checkBoxPhaseVisible.Location = new System.Drawing.Point(6, 21);
+            this.checkBoxPhaseVisible.Name = "checkBoxPhaseVisible";
+            this.checkBoxPhaseVisible.Size = new System.Drawing.Size(71, 21);
+            this.checkBoxPhaseVisible.TabIndex = 0;
+            this.checkBoxPhaseVisible.Text = "Visible";
+            this.checkBoxPhaseVisible.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxBorderVisible
+            // 
+            this.checkBoxBorderVisible.AutoSize = true;
+            this.checkBoxBorderVisible.Location = new System.Drawing.Point(6, 21);
+            this.checkBoxBorderVisible.Name = "checkBoxBorderVisible";
+            this.checkBoxBorderVisible.Size = new System.Drawing.Size(71, 21);
+            this.checkBoxBorderVisible.TabIndex = 1;
+            this.checkBoxBorderVisible.Text = "Visible";
+            this.checkBoxBorderVisible.UseVisualStyleBackColor = true;
+            // 
+            // buttonDrawBorders
+            // 
+            this.buttonDrawBorders.Location = new System.Drawing.Point(6, 93);
+            this.buttonDrawBorders.Name = "buttonDrawBorders";
+            this.buttonDrawBorders.Size = new System.Drawing.Size(100, 23);
+            this.buttonDrawBorders.TabIndex = 2;
+            this.buttonDrawBorders.Text = "Draw all";
+            this.buttonDrawBorders.UseVisualStyleBackColor = true;
+            // 
+            // buttonClearBorders
+            // 
+            this.buttonClearBorders.Location = new System.Drawing.Point(6, 122);
+            this.buttonClearBorders.Name = "buttonClearBorders";
+            this.buttonClearBorders.Size = new System.Drawing.Size(100, 23);
+            this.buttonClearBorders.TabIndex = 3;
+            this.buttonClearBorders.Text = "Clear all";
+            this.buttonClearBorders.UseVisualStyleBackColor = true;
+            // 
+            // labelThickness
+            // 
+            this.labelThickness.AutoSize = true;
+            this.labelThickness.Location = new System.Drawing.Point(3, 45);
+            this.labelThickness.Name = "labelThickness";
+            this.labelThickness.Size = new System.Drawing.Size(72, 17);
+            this.labelThickness.TabIndex = 18;
+            this.labelThickness.Text = "Thickness";
+            // 
+            // numericUpDownThickness
+            // 
+            this.numericUpDownThickness.Location = new System.Drawing.Point(6, 65);
+            this.numericUpDownThickness.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.numericUpDownThickness.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownThickness.Name = "numericUpDownThickness";
+            this.numericUpDownThickness.Size = new System.Drawing.Size(100, 22);
+            this.numericUpDownThickness.TabIndex = 17;
+            this.numericUpDownThickness.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownThickness.ValueChanged += new System.EventHandler(this.numericUpDownThickness_ValueChanged);
+            this.numericUpDownThickness.Leave += new System.EventHandler(this.numericUpDownThickness_Leave);
+            // 
+            // buttonClearPhases
+            // 
+            this.buttonClearPhases.Location = new System.Drawing.Point(6, 48);
+            this.buttonClearPhases.Name = "buttonClearPhases";
+            this.buttonClearPhases.Size = new System.Drawing.Size(100, 23);
+            this.buttonClearPhases.TabIndex = 19;
+            this.buttonClearPhases.Text = "Clear all";
+            this.buttonClearPhases.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxSubstructureVisible
+            // 
+            this.checkBoxSubstructureVisible.AutoSize = true;
+            this.checkBoxSubstructureVisible.Location = new System.Drawing.Point(6, 21);
+            this.checkBoxSubstructureVisible.Name = "checkBoxSubstructureVisible";
+            this.checkBoxSubstructureVisible.Size = new System.Drawing.Size(71, 21);
+            this.checkBoxSubstructureVisible.TabIndex = 19;
+            this.checkBoxSubstructureVisible.Text = "Visible";
+            this.checkBoxSubstructureVisible.UseVisualStyleBackColor = true;
             // 
             // boardControl1
             // 
@@ -588,18 +759,18 @@
             this.boardControl1.IsGridEnabled = false;
             this.boardControl1.Location = new System.Drawing.Point(3, 3);
             this.boardControl1.Name = "boardControl1";
-            this.boardControl1.Size = new System.Drawing.Size(337, 698);
+            this.boardControl1.Size = new System.Drawing.Size(337, 939);
             this.boardControl1.TabIndex = 13;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 734);
+            this.ClientSize = new System.Drawing.Size(732, 975);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(750, 400);
+            this.MinimumSize = new System.Drawing.Size(750, 925);
             this.Name = "Form1";
             this.Text = "Form1";
             this.menuStrip1.ResumeLayout(false);
@@ -621,6 +792,14 @@
             this.groupBoxInclusions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsRadius)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInclusionsNumber)).EndInit();
+            this.groupBoxView.ResumeLayout(false);
+            this.groupBoxPhase.ResumeLayout(false);
+            this.groupBoxPhase.PerformLayout();
+            this.groupBoxBorder.ResumeLayout(false);
+            this.groupBoxBorder.PerformLayout();
+            this.groupBoxSubstructure.ResumeLayout(false);
+            this.groupBoxSubstructure.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThickness)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -673,6 +852,19 @@
         private System.Windows.Forms.NumericUpDown numericUpDownProbability;
         private System.Windows.Forms.Label labelXSize;
         private System.Windows.Forms.NumericUpDown numericUpDownX;
+        private System.Windows.Forms.GroupBox groupBoxView;
+        private System.Windows.Forms.Label label2ndPhase;
+        private System.Windows.Forms.GroupBox groupBoxSubstructure;
+        private System.Windows.Forms.GroupBox groupBoxBorder;
+        private System.Windows.Forms.GroupBox groupBoxPhase;
+        private System.Windows.Forms.Button buttonClearBorders;
+        private System.Windows.Forms.Button buttonDrawBorders;
+        private System.Windows.Forms.CheckBox checkBoxBorderVisible;
+        private System.Windows.Forms.CheckBox checkBoxPhaseVisible;
+        private System.Windows.Forms.Label labelThickness;
+        private System.Windows.Forms.NumericUpDown numericUpDownThickness;
+        private System.Windows.Forms.Button buttonClearPhases;
+        private System.Windows.Forms.CheckBox checkBoxSubstructureVisible;
     }
 }
 
