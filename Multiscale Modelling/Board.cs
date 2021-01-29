@@ -594,6 +594,7 @@ namespace Multiscale_Modelling
                 {
                     if (IsInRadius(center.Position.X, center.Position.Y, cellList[i][j].Position.X, cellList[i][j].Position.Y, radius))
                     {
+                        cellList[i][j].Clear();
                         cellList[i][j].SetColor(Color.Black);
                         cellList[i][j].SetId(-1);
                     }
@@ -664,7 +665,8 @@ namespace Multiscale_Modelling
 
             Parallel.ForEach(group, cell =>
             {
-                cell.SetId(0);
+                //cell.SetId(0);
+                cell.Clear();
                 cell.SetColor(selectionColor);
             });
         }
@@ -789,6 +791,26 @@ namespace Multiscale_Modelling
             }
 
             return;
+        }
+
+        public void ClearPhases()
+        {
+            IEnumerable<Cell> cellsToReset = GetAllCells().Where(c => c.Phase == 1).ToList();
+
+            foreach (Cell cell in cellsToReset)
+            {
+                cell.Phase = 0;
+            }
+        }
+
+        public void ClearBorders()
+        {
+            IEnumerable<Cell> cellsToReset = GetAllCells().Where(c => c.IsOnBorder).ToList();
+
+            foreach (Cell cell in cellsToReset)
+            {
+                cell.IsOnBorder = false;
+            }
         }
 
     }

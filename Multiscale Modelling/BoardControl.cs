@@ -18,8 +18,11 @@ namespace Multiscale_Modelling
         private SolidBrush phaseBrush = new SolidBrush(Color.DeepPink);
         private SolidBrush selectionBrush = new SolidBrush(Color.Yellow);
         private SolidBrush borderBrush = new SolidBrush(Color.Aqua);
-        public int BorderThickness = 1; // TODO
-        private object _lock = new object();
+        private SolidBrush emptyBrush = new SolidBrush(Color.White);
+        public int BorderThickness = 1;
+        public bool ShowPhases = true;
+        public bool ShowBorders = true;
+        public bool ShowSubstructure = true;
 
         public Cell SelectedCell = null;
 
@@ -112,6 +115,7 @@ namespace Multiscale_Modelling
             cellSize = cellWidth < cellHeight ? cellWidth : cellHeight;
         }
 
+        private object _lock = new object();
         public void Draw(IEnumerable<Cell> cellsToDraw = null)
         {
             if (!IsHandleCreated)
@@ -156,10 +160,26 @@ namespace Multiscale_Modelling
                 graphics.DrawLine(gridPen, 0, ToSingle(i * cellSize) - 1, ToSingle(CellNumberWidth * cellSize), ToSingle(i * cellSize) - 1);
         }
 
-        public void DrawCells(IEnumerable<Cell> cellsToDraw = null)
+        public SolidBrush GetBrush(Cell cell)
         {
             SolidBrush brush = null;
 
+            if (ShowBorders && cell.IsOnBorder)
+                brush = borderBrush;
+            else if (cell.IsSelected)
+                brush = selectionBrush;
+            else if (ShowPhases && cell.Phase == 1)
+                brush = phaseBrush;
+            else if (ShowSubstructure)
+                brush = Cell.UniqueColors[cell.Color.ToArgb()];
+            else
+                brush = emptyBrush;
+
+            return brush;
+        }
+
+        public void DrawCells(IEnumerable<Cell> cellsToDraw = null)
+        {
             if (cellsToDraw == null)
             {
                 for (int i = 0; i < Board.RowCount; i++)
@@ -167,16 +187,7 @@ namespace Multiscale_Modelling
                     for (int j = 0; j < Board.ColumnCount; j++)
                     {
                         Cell cell = Board.GetCell(row: i, column: j);
-
-                        if (cell.IsOnBorder)
-                            brush = borderBrush;
-                        else if (cell.IsSelected)
-                            brush = selectionBrush;
-                        else if (cell.Phase == 1)
-                            brush = phaseBrush;
-                        else
-                            brush = Cell.UniqueColors[cell.Color.ToArgb()];
-                        graphics.FillRectangle(brush, cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
+                        graphics.FillRectangle(GetBrush(cell), cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
                     }
                 }
             }
@@ -184,15 +195,7 @@ namespace Multiscale_Modelling
             {
                 foreach (Cell cell in cellsToDraw)
                 {
-                    if (cell.IsOnBorder)
-                        brush = borderBrush;
-                    else if (cell.IsSelected == true)
-                        brush = selectionBrush;
-                    else if (cell.Phase == 1)
-                        brush = phaseBrush;
-                    else
-                        brush = Cell.UniqueColors[cell.Color.ToArgb()];
-                    graphics.FillRectangle(brush, cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
+                    graphics.FillRectangle(GetBrush(cell), cellSize * cell.Position.X - 1, cellSize * cell.Position.Y - 1, cellSize + 1, cellSize + 1);
                 }
             }
         }

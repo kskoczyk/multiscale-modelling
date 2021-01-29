@@ -17,7 +17,7 @@ namespace Multiscale_Modelling
     {
         // TODO:
         // Handle set button in another thread (creation of large boards)
-        // Handle resize when drawing
+        // When setting an inclusion, reset cell's states
         private const int CELL_BITMAP_SIZE = 1;
         public Form1()
         {
@@ -49,25 +49,15 @@ namespace Multiscale_Modelling
                     yield return (T)form;
         }
 
-        private void ToggleSimulationControls(bool toggle)
-        {
-            buttonRun.Enabled = toggle;
-            buttonClear.Enabled = toggle;
-            buttonRandom.Enabled = toggle;
-            buttonClear.Enabled = toggle;
-            checkBoxDisplayGrid.Enabled = toggle; // TODO: pause when checked mid-animation or handle change mid-animation
-            numericUpDownX.Enabled = toggle;
-            numericUpDownY.Enabled = toggle;
-        }
-
         private void ToggleControlsForSimulation(bool toggle)
         {
             groupBoxBoard.Enabled = toggle;
             groupBoxSimulation.Enabled = toggle;
             groupBoxSettings.Enabled = toggle;
             groupBoxInclusions.Enabled = toggle;
-            groupBoxView.Enabled = toggle;
+            //groupBoxView.Enabled = toggle;
             buttonRun.Enabled = toggle;
+            buttonClearPhases.Enabled = toggle;
         }
 
         private void ToggleControlsForSecondPhase(bool toggle)
@@ -93,7 +83,6 @@ namespace Multiscale_Modelling
 
         private void buttonRun_Click(object sender, EventArgs e)
         {
-            //ToggleSimulationControls(false);
             ToggleControlsForSimulation(false);
             bool isSimulationFinished = boardControl1.Board.IsSimulationFinished;
 
@@ -151,8 +140,6 @@ namespace Multiscale_Modelling
                         boardControl1.Board.InitializeCalculations();
                         while (boardControl1.Board.GetAllCells().Where(c => c.Id == 0).FirstOrDefault() is Cell) // null = no more cells to draw
                         {
-                            //Enum.TryParse(comboBoxSimulationType.SelectedItem.ToString(), out E_SimulationType simulationType);
-                            //LinkedList<Cell> cellsToDraw = boardControl1.Board.CalculateNextGeneration((E_SimulationType)Enum.Parse(typeof(E_SimulationType), comboBoxSimulationType.SelectedItem.ToString()));
                             LinkedList<Cell> cellsToDraw = boardControl1.Board.CalculateNextGeneration();
 
                             if (cellsToDraw.Any())
@@ -177,7 +164,6 @@ namespace Multiscale_Modelling
                 {
                     buttonRun.Invoke(new Action(() =>
                     {
-                        //ToggleSimulationControls(true);
                         ToggleControlsForSimulation(true);
                         if (boardControl1.Board.IsSimulationFinished)
                             ToggleControlsForSecondPhase(true);
@@ -211,7 +197,6 @@ namespace Multiscale_Modelling
 
         private void buttonRandom_Click(object sender, EventArgs e)
         {
-            //ToggleSimulationControls(false);
             ToggleControlsForSimulation(false);
 
             Task.Run(() =>
@@ -229,7 +214,6 @@ namespace Multiscale_Modelling
                 {
                     buttonRandom.Invoke(new Action(() =>
                     {
-                        //ToggleSimulationControls(true);
                         ToggleControlsForSimulation(true);
                     }));
                 }
@@ -255,8 +239,8 @@ namespace Multiscale_Modelling
 
         private void buttonClear_Click(object sender, EventArgs e)
         {
-            //ToggleSimulationControls(false);
             ToggleControlsForSimulation(false);
+            checkBoxSubstructureVisible.Checked = true;
 
             Task.Run(() =>
             {
@@ -269,7 +253,6 @@ namespace Multiscale_Modelling
                 {
                     buttonClear.Invoke(new Action(() =>
                     {
-                        //ToggleSimulationControls(true);
                         ToggleControlsForSimulation(true);
                         ToggleControlsForSecondPhase(false);
                     }));
@@ -317,7 +300,7 @@ namespace Multiscale_Modelling
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                boardControl1.Board.ToBitmap(CELL_BITMAP_SIZE).Save(saveFileDialog.FileName, ImageFormat.Bmp);
+                boardControl1.Board.ToBitmap(CELL_BITMAP_SIZE).Save(saveFileDialog.FileName, ImageFormat.Bmp); // TODO: remove imageformat
             else
                 Logs.Log("EXPORT: Unable to show export dialog", Logs.LogLevel.Error);
         }
@@ -414,7 +397,6 @@ namespace Multiscale_Modelling
             if (comboBoxSimulationType.SelectedItem.ToString() == EnumToString.SimulationType[E_SimulationType.ShapeControl])
             {
                 numericUpDownProbability.Enabled = true;
-                //Enum.TryParse(comboBoxSimulationType.SelectedItem.ToString(), out SimulationType);
                 boardControl1.Board.SimulationType = E_SimulationType.ShapeControl;
             }
             else if (comboBoxSimulationType.SelectedItem.ToString() == EnumToString.SimulationType[E_SimulationType.Simple])
@@ -437,6 +419,43 @@ namespace Multiscale_Modelling
         private void numericUpDownThickness_ValueChanged(object sender, EventArgs e)
         {
             boardControl1.BorderThickness = ToInt32(numericUpDownThickness.Value);
+        }
+
+        private void checkBoxPhaseVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            boardControl1.ShowPhases = checkBoxPhaseVisible.Checked;
+            boardControl1.Draw();
+        }
+
+        private void checkBoxBorderVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            boardControl1.ShowBorders = checkBoxBorderVisible.Checked;
+            boardControl1.Draw();
+        }
+
+        private void checkBoxSubstructureVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            boardControl1.ShowSubstructure = checkBoxSubstructureVisible.Checked;
+            boardControl1.Draw();
+        }
+
+        private void buttonClearPhases_Click(object sender, EventArgs e)
+        {
+            boardControl1.Board.ClearPhases();
+            boardControl1.Draw();
+        }
+
+        private void buttonDrawBorders_Click(object sender, EventArgs e)
+        {
+            boardControl1.BorderThickness = ToInt32(numericUpDownThickness.Value);
+            boardControl1.Board.SetBorderCells(boardControl1.BorderThickness);
+            boardControl1.Draw();
+        }
+
+        private void buttonClearBorders_Click(object sender, EventArgs e)
+        {
+            boardControl1.Board.ClearBorders();
+            boardControl1.Draw();
         }
     }
 }
