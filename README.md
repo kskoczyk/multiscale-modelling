@@ -1,2 +1,2 @@
 # multiscale-modelling
-GUI for cellular automate/multiscale modelling transformations
+GUI for cellular automata/multiscale modelling transformations
